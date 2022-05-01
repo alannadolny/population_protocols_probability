@@ -1,3 +1,5 @@
+package Matrixes;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -8,7 +10,7 @@ public class GenerateEquation {
 
     private final int size;
 
-    Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
+    public Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
             new Pair<>("T", "T"), new Pair<>("T", "T"),
             new Pair<>("N", "T"), new Pair<>("U", "U"),
             new Pair<>("T", "N"), new Pair<>("U", "U"),

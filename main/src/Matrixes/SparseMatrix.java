@@ -1,4 +1,5 @@
-import java.math.BigDecimal;
+package Matrixes;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class SparseMatrix<T extends Operations<T>> {
 
     private final GenerateEquation generateEquation;
     private int counter = 0;
-    private T typeElement;
+    private final T typeElement;
 
     public Map<Pair<Integer, Integer>, T> getSparseMatrix() {
         return this.sparseMatrix;
