@@ -1,5 +1,7 @@
 package Variables;
 
+import java.math.BigDecimal;
+
 public interface Operations<T> {
     void add(T a);
 
@@ -7,5 +9,21 @@ public interface Operations<T> {
 
     void multiply(T a);
 
+    void reverseSign();
+
     void divide(T a);
+
+    T initializeToSparseMatrix(Long a, Long b);
+
+    T initialize(T a);
+
+    T absolute();
+
+    T initializeWithZero();
+
+    T initializeWithOne();
+
+    Integer compare(T a);
+
+    BigDecimal returnValue();
 }
