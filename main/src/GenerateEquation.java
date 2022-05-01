@@ -1,5 +1,6 @@
-import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javafx.util.Pair;
 
@@ -53,4 +54,18 @@ public class GenerateEquation {
         return new ArrayList<>(Arrays.asList(votesFor, votesAgainst, unknown));
     }
 
+    public Long getVotesQuantity(Map<ArrayList<Integer>, Long> votesList) {
+        int i = 0;
+        List<Long> list = new ArrayList<>(votesList.values());
+        return list.stream()
+                .reduce(0L, Long::sum);
+    }
+
+    public Map<ArrayList<Integer>, Long> groupVotes(ArrayList<ArrayList<Integer>> votesList) {
+        return votesList.stream().collect(
+                Collectors.groupingBy(
+                        Function.identity(), Collectors.counting()
+                )
+        );
+    }
 }
