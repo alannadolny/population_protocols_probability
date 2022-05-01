@@ -64,7 +64,7 @@ public class SparseMatrix {
                 sparseMatrix.put(new Pair<>(i, (entry.getKey().get(0) * 3) + entry.getKey().get(1)), (entry.getValue() / (float) generateEquation.getVotesQuantity(groupedVotes.get(0))));
             }
         }
-        
+
         for (int i = 0; i < generateEquation.getSize() * generateEquation.getSize(); i++) {
             if (this.sparseMatrix.containsKey(new Pair<>(i, i)) && this.sparseMatrix.get(new Pair<>(i, i)) != 1.0)
                 this.sparseMatrix.put(new Pair<>(i, i), 1F - this.sparseMatrix.get(new Pair<>(i, i)));
