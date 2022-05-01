@@ -21,13 +21,15 @@ public class SparseMatrix {
 
     public void fillMatrix() {
         int t = 0, n = 0;
-        ArrayList<ArrayList<Integer>> possibleChanges = new ArrayList<>();
+        ArrayList<ArrayList<ArrayList<String>>> possibleChanges = new ArrayList<>();
 
         for (int i = 0; i < generateEquation.getSize() * generateEquation.getSize(); i++) {
             sparseMatrix.put(new Pair<>(i, i), 1F);
         }
+        int counter = 0;
 
         while (t + n <= this.generateEquation.getSize()) {
+            possibleChanges.add(new ArrayList<>());
             ArrayList<String> possibleVotes = this.generateEquation.GenerateVoters(t, n);
 
             for (int i = 0; i < this.generateEquation.getSize(); i++) {
@@ -42,11 +44,12 @@ public class SparseMatrix {
                     tempElements.add(copyOfPossibleVotes.get(0));
                     tempElements.add(generateEquation.transitionFunction.get(new Pair<>(possibleVotes.get(i), possibleVotes.get(j))).getKey());
 
-                    System.out.println(tempElements);
+                    possibleChanges.get(counter).add(tempElements);
+                    //System.out.println(tempElements);
                 }
             }
-
-            System.out.println("========================");
+            counter++;
+            //System.out.println("========================");
 
             if (n + t == this.generateEquation.getSize()) {
                 n = 0;
@@ -55,6 +58,7 @@ public class SparseMatrix {
                 n++;
             }
         }
+        System.out.println(possibleChanges);
     }
 
 }
