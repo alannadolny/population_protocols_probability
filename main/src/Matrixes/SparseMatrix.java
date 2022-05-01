@@ -16,9 +16,27 @@ public class SparseMatrix<T extends Operations<T>> {
     private int counter = 0;
     private final T typeElement;
 
+
     public Map<Pair<Integer, Integer>, T> getSparseMatrix() {
         return this.sparseMatrix;
     }
+
+    public Map<Pair<Integer, Integer>, Integer> generateIndexes() {
+        Map<Pair<Integer, Integer>, Integer> indexes = new HashMap<>(Map.of());
+        int t = 0, n = 0, counter = 0;
+        while (t + n <= this.generateEquation.getSize()) {
+            indexes.put(new Pair<>(t, n), counter);
+            if (n + t == this.generateEquation.getSize()) {
+                n = 0;
+                t++;
+            } else {
+                n++;
+            }
+            counter++;
+        }
+
+        return indexes;
+        }
 
     public SparseMatrix(GenerateEquation generateEquation, T typeElement) {
         this.sparseMatrix = new HashMap<>(Map.of());
@@ -28,6 +46,7 @@ public class SparseMatrix<T extends Operations<T>> {
 
     public void fillMatrix() {
         int t = 0, n = 0;
+        Map<Pair<Integer, Integer>, Integer> indexes = generateIndexes();
         ArrayList<ArrayList<ArrayList<Integer>>> possibleChanges = new ArrayList<>();
         ArrayList<Map<ArrayList<Integer>, Long>> groupedVotes = new ArrayList<>();
 
@@ -68,7 +87,7 @@ public class SparseMatrix<T extends Operations<T>> {
             for (Map.Entry<ArrayList<Integer>, Long> entry : groupedVotes.get(i).entrySet()) {
                 T toMatrix = typeElement.initializeToSparseMatrix(entry.getValue(), generateEquation.getVotesQuantity(groupedVotes.get(0)));
                 toMatrix.reverseSign();
-                sparseMatrix.put(new Pair<>(i, (entry.getKey().get(0) * 3) + entry.getKey().get(1)), toMatrix);
+                sparseMatrix.put(new Pair<>(i, indexes.get(new Pair<>(entry.getKey().get(0), entry.getKey().get(1)))), toMatrix);
             }
         }
 
