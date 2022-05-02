@@ -15,7 +15,7 @@ public class MonteCarlo {
     static final Integer amountOfTests = 1000000;
     private final ArrayList<String> arrayOfProbability;
 
-    private Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
+    private final Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
             new Pair<>("T", "T"), new Pair<>("T", "T"),
             new Pair<>("N", "T"), new Pair<>("U", "U"),
             new Pair<>("T", "N"), new Pair<>("U", "U"),
@@ -67,8 +67,8 @@ public class MonteCarlo {
         for (int i = 0; i < amountOfTests; i++) {
             ArrayList<Voter> votersToSymulate = generateVoters();
             while (checkStableState(votersToSymulate)) {
-                Voter firstVoter = votersToSymulate.get((int)(Math.random() * votersToSymulate.size()));
-                Voter secondVoter = votersToSymulate.get((int)(Math.random() * votersToSymulate.size()));
+                Voter firstVoter = votersToSymulate.get((int) (Math.random() * votersToSymulate.size()));
+                Voter secondVoter = votersToSymulate.get((int) (Math.random() * votersToSymulate.size()));
                 Pair<String, String> newPair = transitionFunction.get(new Pair<>(firstVoter.getVote(), secondVoter.getVote()));
                 firstVoter.setVote(newPair.getKey());
                 secondVoter.setVote(newPair.getValue());
