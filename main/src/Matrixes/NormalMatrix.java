@@ -107,7 +107,7 @@ public class NormalMatrix <T extends Operations<T>> {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        DecimalFormat df = new DecimalFormat("+0.00;-0.00");
+        DecimalFormat df = new DecimalFormat("+0.0000;-0.0000");
 
         for(List<T> el : this.matrix) {
             for (T el2 : el) {

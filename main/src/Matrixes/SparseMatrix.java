@@ -21,6 +21,10 @@ public class SparseMatrix<T extends Operations<T>> {
         return this.sparseMatrix;
     }
 
+    public T getTypeElement() {
+        return this.typeElement;
+    }
+
     public Map<Pair<Integer, Integer>, Integer> generateIndexes() {
         Map<Pair<Integer, Integer>, Integer> indexes = new HashMap<>(Map.of());
         int t = 0, n = 0, counter = 0;
@@ -103,6 +107,10 @@ public class SparseMatrix<T extends Operations<T>> {
 
         this.sparseMatrix.put(new Pair<>(counter - 1, counter - 1), typeElement.initializeWithOne());
         this.sparseMatrix.put(new Pair<>(counter - 1, counter), typeElement.initializeWithOne());
+    }
+
+    public Integer countRows() {
+        return generateIndexes().size();
     }
 
     @Override
