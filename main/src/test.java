@@ -25,7 +25,7 @@ public class test {
         GenerateEquation test = new GenerateEquation(3); // tworzy klase do generowania
         SparseMatrix<MyFloat> matrixad = new SparseMatrix<>(test, new MyFloat(0F)); //to juz jest wlasciwa sparse macierz
         matrixad.fillMatrix();
-//        System.out.println(matrixad.toString());
+        //System.out.println(matrixad.toString());
 //
         GaussForSparseMatrix<MyFloat> testowyGauss = new GaussForSparseMatrix<>();
         NormalMatrix<MyFloat> testowyResult = testowyGauss.G(matrixad, "PG"); //here
@@ -50,6 +50,8 @@ public class test {
         elementyDoWektora.add(new MyFloat(0F));
         elementyDoWektora.add(new MyFloat(0F));
         elementyDoWektora.add(new MyFloat(0F));
+
+
         elementyDoWektora.add(new MyFloat(1F));
 
         NormalMatrix<MyFloat> vectorxd = new NormalMatrix<>(1, elementyDoWektora);
@@ -71,8 +73,8 @@ public class test {
 ////        //test czy wgl dobrze to wszystko jest zrobione XD
 ////
         Gauss<MyFloat> mlodyG = new Gauss<>();
-//        NormalMatrix<MyFloat> result = mlodyG.G(matrix2, vectorxd, "G");
-        NormalMatrix<MyFloat> result = mlodyG.GS(matrix2, vectorxd, 5);
+        NormalMatrix<MyFloat> result = mlodyG.G(matrix2, vectorxd, "G");
+       // NormalMatrix<MyFloat> result = mlodyG.GS(matrix2, vectorxd, 5);
  //       System.out.println(matrix2.toString());
         System.out.println("Rozwiazana normalna macierz: ");
         System.out.println(result.toString());
