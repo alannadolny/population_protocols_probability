@@ -113,6 +113,7 @@ public class Gauss<T extends Operations<T>> {
 
         return new NormalMatrix<>(1, results);
     }
+
     public NormalMatrix<T> GJ(NormalMatrix<T> matrix, NormalMatrix<T> vector, int iter) {
         List<T> results = new ArrayList<>();
         for (int i = 0; i < matrix.countRows(); i++) {
@@ -137,4 +138,34 @@ public class Gauss<T extends Operations<T>> {
         }
         return new NormalMatrix<>(1, results);
     }
+
+    public NormalMatrix<T> GS(NormalMatrix<T> matrix, NormalMatrix<T> vector, int iter) {
+        List<T> results = new ArrayList<>();
+        for (int i = 0; i < matrix.countRows(); i++) {
+            results.add(matrix.getMatrix().get(0).get(0).initializeWithZero());
+        }
+        for (int h = 0; h < iter; h++) {
+//            List<T> newResult = new ArrayList<>();
+            for (int i = 0; i < matrix.countRows(); i++) {
+//                newResult.add(matrix.getMatrix().get(0).get(0).initializeWithZero());
+                T summary = matrix.getMatrix().get(0).get(0).initializeWithZero();
+                for (int j = 0; j < matrix.countColumns(); j++) {
+                    if (j!=i) {
+                        T temp2 = matrix.getMatrix().get(i).get(j).initialize(matrix.getMatrix().get(i).get(j));
+                        temp2.multiply(results.get(j));
+                        summary.add(temp2);
+                    }
+                }
+                T temp= vector.getMatrix().get(i).get(0).initialize(vector.getMatrix().get(i).get(0));
+                temp.subtract(summary);
+                temp.divide(matrix.getMatrix().get(i).get(i));
+                results.set(i,temp);
+//                summary.divide(matrix.getMatrix().get(i).get(i));
+//                newResult.set(i, summary);
+            }
+//            results = newResult;
+        }
+        return new NormalMatrix<>(1, results);
+    }
+
 }

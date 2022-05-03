@@ -111,7 +111,7 @@ public class test {
 
         Gauss<MyFloat> gauss= new Gauss<>();
 
-        NormalMatrix<MyFloat> res= gauss.GJ(matrix,vector,8);
+        NormalMatrix<MyFloat> res= gauss.GJ(matrix,vector,3);
 
         System.out.println(res.toString());
 

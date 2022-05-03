@@ -29,6 +29,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
         List<T> results = new ArrayList<>();
         int leadingNumberIndex = 0;
         while (leadingNumberIndex < matrix.countRows()) { // elementy wiodace
+            System.out.println(matrix.toString());
             if (mode.equals("PG"))
                 if (findRowWithMaximumElement(matrix, leadingNumberIndex) != leadingNumberIndex) {
                     int index = findRowWithMaximumElement(matrix, leadingNumberIndex);
@@ -60,9 +61,12 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                 //x.divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)));
                 for (int j = 0; j < matrix.countRows() + 1; j++) { // kolumny
                     if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, j))) {
-                        T toSubtract = matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)).initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
+                        T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
                         toSubtract.multiply(x);
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
+                            matrix.getSparseMatrix().get(new Pair<>(i, j)).subtract(toSubtract);
+                        } else {
+                            matrix.getSparseMatrix().put(new Pair<>(i, j), matrix.getTypeElement().initializeWithZero());
                             matrix.getSparseMatrix().get(new Pair<>(i, j)).subtract(toSubtract);
                         }
                     }
@@ -74,30 +78,20 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
         for (int i = matrix.countRows() - 1; i >= 0; i--) {
             int resultIndex;
             for (int j = matrix.countRows() - 1; j > i; j--) {
-                resultIndex = matrix.countRows() - 1 - j;
                 T temp, nextTemp;
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                    temp = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, j)));
-                } else {
-                    temp = matrix.getTypeElement().initializeWithZero();
-                }
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, matrix.countRows()))) {
-                    nextTemp = matrix.getTypeElement().initialize(results.get(resultIndex));
-                } else {
-                    nextTemp = matrix.getTypeElement().initializeWithZero();
-                }
+                resultIndex = matrix.countRows() - 1 - j;
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) temp = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, j)));
+                else temp = matrix.getTypeElement().initializeWithZero();
+                nextTemp = matrix.getTypeElement().initialize(results.get(resultIndex));
                 temp.multiply(nextTemp);
-                if (!matrix.getSparseMatrix().containsKey(new Pair<>(i, matrix.countRows()))) {
-                    matrix.getSparseMatrix().put(new Pair<>(i, matrix.countRows()), matrix.getTypeElement().initializeWithOne());
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, matrix.countRows()))) matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).subtract(temp);
+                else {
+                    matrix.getSparseMatrix().put(new Pair<>(i, matrix.countRows()), matrix.getTypeElement().initializeWithZero());
+                    matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).subtract(temp);
                 }
-                matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).subtract(temp);
             }
-            if (matrix.getSparseMatrix().containsKey(new Pair<>(i, matrix.countRows())) && matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex - 1, leadingNumberIndex - 1))) {
-                matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex - 1, leadingNumberIndex - 1)));
-                results.add(matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())));
-            } else {
-                results.add(matrix.getTypeElement().initializeWithZero());
-            }
+            matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex - 1, leadingNumberIndex - 1)));
+            results.add(matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())));
             leadingNumberIndex--;
         }
 
