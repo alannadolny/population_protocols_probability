@@ -1,6 +1,7 @@
 package Variables;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class MyFloat implements Operations<MyFloat> {
     private Float num;
@@ -61,6 +62,7 @@ public class MyFloat implements Operations<MyFloat> {
 
     @Override
     public Integer compare(MyFloat a) {
+//        System.out.println(a.num);
         return this.num.compareTo(a.num);
     }
 

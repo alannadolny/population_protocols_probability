@@ -40,7 +40,7 @@ public class SparseMatrix<T extends Operations<T>> {
         }
 
         return indexes;
-        }
+    }
 
     public SparseMatrix(GenerateEquation generateEquation, T typeElement) {
         this.sparseMatrix = new HashMap<>(Map.of());
@@ -113,15 +113,19 @@ public class SparseMatrix<T extends Operations<T>> {
         return generateIndexes().size();
     }
 
+    public Integer countColumns() {
+        return countRows() + 1;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        DecimalFormat df = new DecimalFormat("+0.00;-0.00");
+        DecimalFormat df = new DecimalFormat("+0.0000;-0.0000");
         for (int i = 0; i < counter; i++) {
             for (int j = 0; j < counter + 1; j++) {
                 if (this.sparseMatrix.containsKey(new Pair<>(i, j)))
                     result.append(df.format(this.sparseMatrix.get(new Pair<>(i, j)).returnValue())).append(" ");
-                else result.append("+0,00 ");
+                else result.append("+0,0000 ");
             }
             result.append("\n");
         }
