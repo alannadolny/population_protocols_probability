@@ -61,9 +61,21 @@ public class TestGauss {
     }
 
     @Test
+    public void testGaussGFloat() {
+        NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF, this.vectorF, "");
+        assertEquals("Gauss G", this.res, res.toString());
+    }
+
+    @Test
     public void testGaussPGFloat() {
         NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF, this.vectorF, "PG");
         assertEquals("Gauss PG", this.res, res.toString());
+    }
+
+    @Test
+    public void testGaussFGFloat() {
+        NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF, this.vectorF, "FG");
+        assertEquals("Gauss FG", this.res, res.toString());
     }
 
     @Test
@@ -79,9 +91,21 @@ public class TestGauss {
     }
 
     @Test
+    public void testGaussGDouble() {
+        NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, this.vectorD, "");
+        assertEquals("Gauss G", this.res, res.toString());
+    }
+
+    @Test
     public void testGaussPGDouble() {
         NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, this.vectorD, "PG");
         assertEquals("Gauss PG", this.res, res.toString());
+    }
+
+    @Test
+    public void testGaussFGDouble() {
+        NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, this.vectorD, "FG");
+        assertEquals("Gauss FG", this.res, res.toString());
     }
 
     @Test
@@ -97,9 +121,21 @@ public class TestGauss {
     }
 
     @Test
+    public void testGaussGFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr, this.vectorFr, "G");
+        assertEquals("Gauss PG", this.res, res.toString());
+    }
+
+    @Test
     public void testGaussPGFractions() {
         NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr, this.vectorFr, "PG");
         assertEquals("Gauss PG", this.res, res.toString());
+    }
+
+    @Test
+    public void testGaussFGFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr, this.vectorFr, "FG");
+        assertEquals("Gauss FG", this.res, res.toString());
     }
 
     @Test
