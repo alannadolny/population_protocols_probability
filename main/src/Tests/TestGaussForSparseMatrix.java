@@ -66,6 +66,9 @@ public class TestGaussForSparseMatrix {
 
     @Test
     public void testGaussPGDouble() {
+        System.out.println(this.matrixF);
+        System.out.println("===================");
+        System.out.println(this.matrixD);
         NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, "PG");
         assertEquals("Gauss PG", this.res, res.toString());
     }

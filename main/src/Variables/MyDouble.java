@@ -28,7 +28,7 @@ public class MyDouble implements Operations<MyDouble> {
 
     @Override
     public void reverseSign() {
-        this.num += -1;
+        this.num *= -1;
     }
 
     @Override

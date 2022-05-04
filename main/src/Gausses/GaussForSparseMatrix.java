@@ -87,7 +87,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
             }
             leadingNumberIndex++;
         }
-        
+
 
         for (int i = matrix.countRows() - 1; i >= 0; i--) {
             int resultIndex;
