@@ -4,6 +4,7 @@ import Gausses.Gauss;
 import Matrixes.NormalMatrix;
 import Variables.MyDouble;
 import Variables.MyFloat;
+import Variables.MyFractions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,10 +19,13 @@ public class TestGauss {
 
     private NormalMatrix<MyFloat> matrixF;
     private NormalMatrix<MyFloat> vectorF;
+    private NormalMatrix<MyFractions> matrixFr;
+    private NormalMatrix<MyFractions> vectorFr;
     private NormalMatrix<MyDouble> matrixD;
     private NormalMatrix<MyDouble> vectorD;
     private Gauss<MyFloat> gaussF;
     private Gauss<MyDouble> gaussD;
+    private Gauss<MyFractions> gaussFr;
     private String res = "+1,0000 \n" + "+2,0000 \n" + "-1,0000 \n" + "+1,0000 \n";
 
     @Before
@@ -32,38 +36,34 @@ public class TestGauss {
         Collections.addAll(listOfNumbersToVec, 6, 25, -11, 15);
         List<MyFloat> floatToMat = new ArrayList<>();
         List<MyDouble> doubleToMat = new ArrayList<>();
+        List<MyFractions> fractionsToMat = new ArrayList<>();
         List<MyFloat> floatToVec = new ArrayList<>();
         List<MyDouble> doubleToVec = new ArrayList<>();
+        List<MyFractions> fractionsToVec = new ArrayList<>();
+
         listOfNumbersToMat.forEach((n) -> floatToMat.add(new MyFloat(n.floatValue())));
         listOfNumbersToMat.forEach((n) -> doubleToMat.add(new MyDouble(n.doubleValue())));
+        listOfNumbersToMat.forEach((n) -> fractionsToMat.add(new MyFractions((long) n.doubleValue())));
         listOfNumbersToVec.forEach((n) -> floatToVec.add(new MyFloat(n.floatValue())));
         listOfNumbersToVec.forEach((n) -> doubleToVec.add(new MyDouble(n.doubleValue())));
+        listOfNumbersToVec.forEach((n) -> fractionsToVec.add(new MyFractions((long) n.doubleValue())));
 
         this.matrixF = new NormalMatrix<>(4, floatToMat);
         this.vectorF = new NormalMatrix<>(1, floatToVec);
         this.matrixD = new NormalMatrix<>(4, doubleToMat);
         this.vectorD = new NormalMatrix<>(1, doubleToVec);
+        this.matrixFr = new NormalMatrix<>(4, fractionsToMat);
+        this.vectorFr = new NormalMatrix<>(1, fractionsToVec);
 
         this.gaussF = new Gauss<>();
         this.gaussD = new Gauss<>();
-    }
-
-    @Test
-    public void testGaussGFloat() {
-        NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF, this.vectorF, "");
-        assertEquals("Gauss G", this.res, res.toString());
+        this.gaussFr = new Gauss<>();
     }
 
     @Test
     public void testGaussPGFloat() {
         NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF, this.vectorF, "PG");
         assertEquals("Gauss PG", this.res, res.toString());
-    }
-
-    @Test
-    public void testGaussFGFloat() {
-        NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF, this.vectorF, "FG");
-        assertEquals("Gauss FG", this.res, res.toString());
     }
 
     @Test
@@ -79,21 +79,9 @@ public class TestGauss {
     }
 
     @Test
-    public void testGaussGDouble() {
-        NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, this.vectorD, "");
-        assertEquals("Gauss G", this.res, res.toString());
-    }
-
-    @Test
     public void testGaussPGDouble() {
         NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, this.vectorD, "PG");
         assertEquals("Gauss PG", this.res, res.toString());
-    }
-
-    @Test
-    public void testGaussFGDouble() {
-        NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD, this.vectorD, "FG");
-        assertEquals("Gauss FG", this.res, res.toString());
     }
 
     @Test
@@ -105,6 +93,24 @@ public class TestGauss {
     @Test
     public void testGaussGSDouble() {
         NormalMatrix<MyDouble> res = this.gaussD.GS(this.matrixD, this.vectorD, 100);
+        assertEquals("Gauss GS", this.res, res.toString());
+    }
+
+    @Test
+    public void testGaussPGFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr, this.vectorFr, "PG");
+        assertEquals("Gauss PG", this.res, res.toString());
+    }
+
+    @Test
+    public void testGaussGJFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.GJ(this.matrixFr, this.vectorFr, 100);
+        assertEquals("Gauss GJ", this.res, res.toString());
+    }
+
+    @Test
+    public void testGaussGSFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.GS(this.matrixFr, this.vectorFr, 100);
         assertEquals("Gauss GS", this.res, res.toString());
     }
 
