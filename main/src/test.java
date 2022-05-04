@@ -114,9 +114,9 @@ public class test {
 
         Gauss<MyFloat> gauss= new Gauss<>();
 
-        NormalMatrix<MyFloat> res= gauss.GS(matrix,vector,3);
+        NormalMatrix<MyFloat> res= gauss.G(matrix,vector,"");
 
-//        System.out.println(res.toString());
+        System.out.println(res.toString());
 
         System.out.println("=======================================");
     }
