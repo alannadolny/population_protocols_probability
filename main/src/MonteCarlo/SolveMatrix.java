@@ -17,6 +17,10 @@ public class SolveMatrix {
         this.amountOfVoters = amountOfVoters;
     }
 
+    public ArrayList<Double> getResult() {
+        return result;
+    }
+
     public Map<Integer, Pair<Integer, Integer>> generateIndexes() {
         Map<Integer, Pair<Integer, Integer>> indexes = new HashMap<>(Map.of());
         int t = 0, n = 0, counter = 0;

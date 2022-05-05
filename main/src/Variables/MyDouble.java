@@ -72,6 +72,11 @@ public class MyDouble implements Operations<MyDouble> {
         return BigDecimal.valueOf(this.num);
     }
 
+    @Override
+    public MyDouble initializeWithDouble(Double num) {
+        return new MyDouble(num);
+    }
+
     public Double getValue() {
         return this.num;
     }

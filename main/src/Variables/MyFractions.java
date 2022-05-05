@@ -106,4 +106,23 @@ public class MyFractions implements Operations<MyFractions> {
         this.numerator = this.numerator.divide(nwd);
         this.denumerator = this.denumerator.divide(nwd);
     }
+
+    @Override
+    public MyFractions initializeWithDouble(Double number) {
+        String numberInString = String.valueOf(number);
+        String behindComma = numberInString.split("\\.")[1];
+        long numbersBehindComma;
+        if (behindComma.contains("E-")) {
+            long beforeEsign = behindComma.split("E-")[0].length();
+            long afterEsign = Long.parseLong(behindComma.split("E-")[1]);
+            numbersBehindComma = beforeEsign + afterEsign;
+        } else {
+            numbersBehindComma = behindComma.length();
+        }
+        System.out.println(Math.pow(10, numbersBehindComma));
+        System.out.println(number * Math.pow(10, numbersBehindComma));
+        BigInteger numerator = new BigInteger(String.valueOf((long) (number * Math.pow(10, numbersBehindComma))));
+        BigInteger denumerator = new BigInteger(String.valueOf((long) Math.pow(10, numbersBehindComma)));
+        return new MyFractions(numerator, denumerator);
+    }
 }

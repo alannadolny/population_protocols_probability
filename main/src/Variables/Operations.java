@@ -23,6 +23,8 @@ public interface Operations<T> {
 
     T initializeWithOne();
 
+    T initializeWithDouble(Double num);
+
     Integer compare(T a);
 
     BigDecimal returnValue();
