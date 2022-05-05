@@ -67,7 +67,7 @@ public class SparseMatrix<T extends Operations<T>> {
                     copyOfPossibleVotes.remove(possibleVotes.get(j));
                     if (i == j) continue;
                     tempElements.add(generateEquation.transitionFunction.get(new Pair<>(possibleVotes.get(i), possibleVotes.get(j))).getValue());
-                    tempElements.add(copyOfPossibleVotes.get(0));
+                    tempElements.addAll(copyOfPossibleVotes);
                     tempElements.add(generateEquation.transitionFunction.get(new Pair<>(possibleVotes.get(i), possibleVotes.get(j))).getKey());
 
                     possibleChanges.get(this.counter).add(generateEquation.sumVotes(tempElements));

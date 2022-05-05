@@ -12,7 +12,7 @@ public class MonteCarlo {
     private final Integer For;
     private final Integer Against;
     private final Integer AllVoters;
-    static final Integer amountOfTests = 1000000;
+    static final Integer amountOfTests = 100000;
     private final ArrayList<String> arrayOfProbability;
 
     private final Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
