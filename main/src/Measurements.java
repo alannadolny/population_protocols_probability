@@ -8,7 +8,9 @@ import MonteCarlo.SolveMatrix;
 import Variables.MyDouble;
 import Variables.MyFractions;
 import Variables.Operations;
+import org.ejml.data.DMatrixSparseCSC;
 import org.ejml.data.DMatrixSparseTriplet;
+import org.ejml.ops.DConvertMatrixStruct;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -293,13 +295,17 @@ public class Measurements<T extends Operations<T>> {
 //        tests.add(10);
 //        measure.verifyIterativeMethods(tests, new MyFractions(0));
         // measure.compareSparseMatrixWithNormalMatrix(tests, new MyFractions(0));
-        SparseLibraryMatrix<MyDouble> temp = new SparseLibraryMatrix<>(5, 3);
-        temp.addItem(1, 2, 0.1);
-        temp.addItem(3, 2, 0.2);
-        temp.addItem(1, 4, 0.3);
+//        SparseLibraryMatrix<MyDouble> temp = new SparseLibraryMatrix<>(5, 3);
+//        temp.addItem(1, 2, 0.1);
+//        temp.addItem(3, 2, 0.2);
+//        temp.addItem(1, 4, 0.3);
+
 //        System.out.println(Arrays.toString(temp.matrix.nz));
 //        System.out.println(Arrays.toString(temp.getSparseMatrix().nz_rowcol.data));
 //        System.out.println(Arrays.toString(temp.getSparseMatrix().nz_value.data));
 //        System.out.println(temp.getSparseMatrix().get(1, 4));
+        SparseLibraryMatrix library = new SparseLibraryMatrix(3);
+        library.fillMatrix();
+        System.out.println(library.solve());
     }
 }
