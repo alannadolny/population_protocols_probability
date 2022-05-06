@@ -5,6 +5,7 @@ import Matrixes.NormalMatrix;
 import Matrixes.SparseLibraryMatrix;
 import Matrixes.SparseMatrix;
 import MonteCarlo.SolveMatrix;
+import Variables.MyDouble;
 import Variables.Operations;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Measurements<T extends Operations<T>> {
@@ -33,18 +36,22 @@ public class Measurements<T extends Operations<T>> {
         return initialValue;
     }
 
-    public void getIterationNumber(double expectedPrecision, T el) throws IOException {
-        int i = 0;
+    public void getIterationNumber(int size, double expectedPrecision, T el) throws IOException {
+        int iteration = 1;
         boolean gj = false, gs = false;
         while (true) {
-            GenerateEquation generateEquation = new GenerateEquation(i);
+            SparseLibraryMatrix library = new SparseLibraryMatrix(size);
+            library.fillMatrix();
+            ArrayList<Double> resultFromLibrary = library.solve();
+
+            GenerateEquation generateEquation = new GenerateEquation(size);
             SparseMatrix<T> sparseMatrixGJ = new SparseMatrix<>(generateEquation, el);
             SparseMatrix<T> sparseMatrixGS = new SparseMatrix<>(generateEquation, el);
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
             GaussForSparseMatrix<T> gauss = new GaussForSparseMatrix<>();
-            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 100);
-            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 100);
+            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, iteration);
+            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, iteration);
 
             ArrayList<T> normsGJ = new ArrayList<>();
             ArrayList<T> normsGS = new ArrayList<>();
@@ -52,25 +59,26 @@ public class Measurements<T extends Operations<T>> {
             for (int j = 0; j < resultGJ.getMatrix().size(); j++) {
                 for (int k = 0; k < resultGJ.getMatrix().get(j).size(); k++) {
                     T tempGJ = resultGJ.getMatrix().get(j).get(k).initialize(resultGJ.getMatrix().get(j).get(k));
-                    // odjecie od wyniku z bibilio -> tempGJ.subtract(tempGJ.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGJ.subtract(tempGJ.initializeWithDouble(resultFromLibrary.get(j)));
                     normsGJ.add(tempGJ.absolute());
 
                     T tempGS = resultGJ.getMatrix().get(j).get(k).initialize(resultGS.getMatrix().get(j).get(k));
-                    // odjecie od wyniku z bibilio -> tempGS.subtract(tempGS.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGS.subtract(tempGS.initializeWithDouble(resultFromLibrary.get(j)));
                     normsGS.add(tempGS.absolute());
                 }
             }
 
-            if (this.getMaximumNorm(normsGJ).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0) {
-                this.saveResults("GJ - precision: " + expectedPrecision + " in iteration: " + i, "compareJacobiWithSeidelSparseMatrix1", "C:/Users/gruby/population_protocols_probability/data/");
+
+            if (this.getMaximumNorm(normsGJ).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0 && !gj) {
+                this.saveResults("GJ - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix1", "C:/Users/gruby/population_protocols_probability/data/");
                 gj = true;
             }
-            if (this.getMaximumNorm(normsGS).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0) {
-                this.saveResults("GS - precision: " + expectedPrecision + " in iteration: " + i, "compareJacobiWithSeidelSparseMatrix2", "C:/Users/gruby/population_protocols_probability/data/");
+            if (this.getMaximumNorm(normsGS).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0 && !gs) {
+                this.saveResults("GS - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix2", "C:/Users/gruby/population_protocols_probability/data/");
                 gs = true;
             }
             if (gj && gs) break;
-            i++;
+            iteration++;
         }
     }
 
@@ -80,21 +88,12 @@ public class Measurements<T extends Operations<T>> {
 
         for (int i : values) {
 
-            ArrayList<T> vector = new ArrayList<>();
-            ArrayList<T> vector2 = new ArrayList<>();
-            for (int k = 0; k < i - 1; k++) {
-                vector.add(el.initializeWithZero());
-                vector2.add(el.initializeWithZero());
-            }
-
-            vector.add(el.initializeWithOne());
-            vector2.add(el.initializeWithOne());
-
-            NormalMatrix<T> vectorGJ = new NormalMatrix<>(1, vector);
-            NormalMatrix<T> vectorGS = new NormalMatrix<>(1, vector2);
-
             ArrayList<T> normsGJ = new ArrayList<>();
             ArrayList<T> normsGS = new ArrayList<>();
+
+            SparseLibraryMatrix library = new SparseLibraryMatrix(i);
+            library.fillMatrix();
+            ArrayList<Double> resultFromLibrary = library.solve();
 
             GenerateEquation generateEquation = new GenerateEquation(i);
             SparseMatrix<T> sparseMatrixGJ = new SparseMatrix<>(generateEquation, el);
@@ -106,6 +105,18 @@ public class Measurements<T extends Operations<T>> {
             NormalMatrix<T> normalMatrixGJ = new NormalMatrix<>(sparseMatrixGJ.generateIndexes().size(), sparseMatrixGJ);
             NormalMatrix<T> normalMatrixGS = new NormalMatrix<>(sparseMatrixGS.generateIndexes().size(), sparseMatrixGS);
 
+            ArrayList<T> vector = new ArrayList<>();
+            ArrayList<T> vector2 = new ArrayList<>();
+            for (int k = 0; k < sparseMatrixGJ.generateIndexes().size() - 1; k++) {
+                vector.add(el.initializeWithZero());
+                vector2.add(el.initializeWithZero());
+            }
+
+            vector.add(el.initializeWithOne());
+            vector2.add(el.initializeWithOne());
+
+            NormalMatrix<T> vectorGJ = new NormalMatrix<>(1, vector);
+            NormalMatrix<T> vectorGS = new NormalMatrix<>(1, vector2);
 
             long start = System.currentTimeMillis();
             NormalMatrix<T> resultGJ = gauss.GJ(normalMatrixGJ, vectorGJ, 100);
@@ -120,11 +131,11 @@ public class Measurements<T extends Operations<T>> {
             for (int j = 0; j < resultGJ.getMatrix().size(); j++) {
                 for (int k = 0; k < resultGJ.getMatrix().get(j).size(); k++) {
                     T tempGJ = resultGJ.getMatrix().get(j).get(k).initialize(resultGJ.getMatrix().get(j).get(k));
-                    // odjecie od wyniku z bibilio -> tempGJ.subtract(tempGJ.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGJ.subtract(tempGJ.initializeWithDouble(resultFromLibrary.get(j)));
                     normsGJ.add(tempGJ.absolute());
 
                     T tempGS = resultGJ.getMatrix().get(j).get(k).initialize(resultGS.getMatrix().get(j).get(k));
-                    // odjecie od wyniku z bibilio -> tempGS.subtract(tempGS.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGS.subtract(tempGS.initializeWithDouble(resultFromLibrary.get(j)));
                     normsGS.add(tempGS.absolute());
                 }
             }
@@ -134,7 +145,7 @@ public class Measurements<T extends Operations<T>> {
 
         }
 
-        this.saveResults(results.toString(), "compareJacobiWithSeidelSparseMatrix", "C:/Users/gruby/population_protocols_probability/data/");
+        this.saveResults(results.toString(), "compareJacobiWithSeidelNormalMatrix", "C:/Users/gruby/population_protocols_probability/data/");
     }
 
     public void compareJacobiWithSeidelSparseMatrix(ArrayList<Integer> values, T el) throws IOException {
@@ -142,6 +153,10 @@ public class Measurements<T extends Operations<T>> {
         StringBuilder results = new StringBuilder();
 
         for (int i : values) {
+
+            SparseLibraryMatrix library = new SparseLibraryMatrix(i);
+            library.fillMatrix();
+            ArrayList<Double> resultFromLibrary = library.solve();
 
             ArrayList<T> normsGJ = new ArrayList<>();
             ArrayList<T> normsGS = new ArrayList<>();
@@ -166,11 +181,11 @@ public class Measurements<T extends Operations<T>> {
             for (int j = 0; j < resultGJ.getMatrix().size(); j++) {
                 for (int k = 0; k < resultGJ.getMatrix().get(j).size(); k++) {
                     T tempGJ = resultGJ.getMatrix().get(j).get(k).initialize(resultGJ.getMatrix().get(j).get(k));
-                    // odjecie od wyniku z bibilio -> tempGJ.subtract(tempGJ.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGJ.subtract(tempGJ.initializeWithDouble(resultFromLibrary.get(j)));
                     normsGJ.add(tempGJ.absolute());
 
                     T tempGS = resultGJ.getMatrix().get(j).get(k).initialize(resultGS.getMatrix().get(j).get(k));
-                    // odjecie od wyniku z bibilio -> tempGS.subtract(tempGS.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGS.subtract(tempGS.initializeWithDouble(resultFromLibrary.get(j)));
                     normsGS.add(tempGS.absolute());
                 }
             }
@@ -190,13 +205,9 @@ public class Measurements<T extends Operations<T>> {
 
         for (int i : values) {
 
-            ArrayList<T> vector = new ArrayList<>();
-            for (int k = 0; k < i - 1; k++) {
-                vector.add(el.initializeWithZero());
-            }
-
-            vector.add(el.initializeWithOne());
-            NormalMatrix<T> vectorForNormal = new NormalMatrix<>(1, vector);
+            SparseLibraryMatrix library = new SparseLibraryMatrix(i);
+            library.fillMatrix();
+            ArrayList<Double> resultFromLibrary = library.solve();
 
             GenerateEquation generateEquation = new GenerateEquation(i);
             SparseMatrix<T> sparseMatrixForNormal = new SparseMatrix<>(generateEquation, el);
@@ -204,6 +215,14 @@ public class Measurements<T extends Operations<T>> {
             NormalMatrix<T> normalMatrixPG = new NormalMatrix<>(sparseMatrixForNormal.generateIndexes().size(), sparseMatrixForNormal);
             SparseMatrix<T> sparseMatrixPG = new SparseMatrix<>(generateEquation, el);
             sparseMatrixPG.fillMatrix();
+
+            ArrayList<T> vector = new ArrayList<>();
+            for (int k = 0; k < sparseMatrixForNormal.generateIndexes().size() - 1; k++) {
+                vector.add(el.initializeWithZero());
+            }
+
+            vector.add(el.initializeWithOne());
+            NormalMatrix<T> vectorForNormal = new NormalMatrix<>(1, vector);
 
             GaussForSparseMatrix<T> gauss = new GaussForSparseMatrix<>();
             Gauss<T> gaussForNormal = new Gauss<>();
@@ -224,11 +243,11 @@ public class Measurements<T extends Operations<T>> {
             for (int j = 0; j < normalMatrixPG.getMatrix().size(); j++) {
                 for (int k = 0; k < resultNormalMatrix.getMatrix().get(j).size(); k++) {
                     T tempNormal = resultNormalMatrix.getMatrix().get(j).get(k).initialize(resultNormalMatrix.getMatrix().get(j).get(k));
-                    // tutaj powinno odejmowac od biblioteki -> tempGJ.subtract(tempGJ.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempNormal.subtract(tempNormal.initializeWithDouble(resultFromLibrary.get(j)));
                     normsForNormalMatrix.add(tempNormal.absolute());
 
                     T tempGS = resultForSparseMatrix.getMatrix().get(j).get(k).initialize(resultForSparseMatrix.getMatrix().get(j).get(k));
-                    // tutaj powinno odejmowac od biblioteki -> tempGS.subtract(tempGS.initializeWithDouble(monteCarlo.getResult().get(j)));
+                    tempGS.subtract(tempGS.initializeWithDouble(resultFromLibrary.get(j)));
                     normsForSpareMatrix.add(tempGS.absolute());
                 }
             }
@@ -282,9 +301,14 @@ public class Measurements<T extends Operations<T>> {
     }
 
 
-    public static void main(String[] args) {
-        SparseLibraryMatrix library = new SparseLibraryMatrix(3);
-        library.fillMatrix();
-        System.out.println(library.solve());
+    public static void main(String[] args) throws IOException {
+        Measurements<MyDouble> measurements = new Measurements<>();
+        ArrayList<Integer> toCalculate = new ArrayList<>();
+        Collections.addAll(toCalculate, 10);
+        measurements.verifyIterativeMethods(toCalculate, new MyDouble(0D));
+        measurements.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D));
+        measurements.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D));
+        measurements.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D));
+        measurements.getIterationNumber(5, 0.00000000001, new MyDouble(0D));
     }
 }

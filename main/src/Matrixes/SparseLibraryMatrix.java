@@ -58,7 +58,6 @@ public class SparseLibraryMatrix {
             if(calculated.isAssigned(i, 0)) toReturn.add(calculated.get(i, 0));
             else toReturn.add(0D);
         }
-        System.out.println(toReturn);
         return toReturn;
     }
 
