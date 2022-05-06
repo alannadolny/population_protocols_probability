@@ -5,20 +5,13 @@ import Matrixes.NormalMatrix;
 import Matrixes.SparseLibraryMatrix;
 import Matrixes.SparseMatrix;
 import MonteCarlo.SolveMatrix;
-import Variables.MyDouble;
-import Variables.MyFractions;
 import Variables.Operations;
-import org.ejml.data.DMatrixSparseCSC;
-import org.ejml.data.DMatrixSparseTriplet;
-import org.ejml.ops.DConvertMatrixStruct;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class Measurements<T extends Operations<T>> {
@@ -87,8 +80,8 @@ public class Measurements<T extends Operations<T>> {
 
         for (int i : values) {
 
-            ArrayList<T> vector = new ArrayList<T>();
-            ArrayList<T> vector2 = new ArrayList<T>();
+            ArrayList<T> vector = new ArrayList<>();
+            ArrayList<T> vector2 = new ArrayList<>();
             for (int k = 0; k < i - 1; k++) {
                 vector.add(el.initializeWithZero());
                 vector2.add(el.initializeWithZero());
@@ -97,8 +90,8 @@ public class Measurements<T extends Operations<T>> {
             vector.add(el.initializeWithOne());
             vector2.add(el.initializeWithOne());
 
-            NormalMatrix<T> vectorGJ = new NormalMatrix<T>(1, vector);
-            NormalMatrix<T> vectorGS = new NormalMatrix<T>(1, vector2);
+            NormalMatrix<T> vectorGJ = new NormalMatrix<>(1, vector);
+            NormalMatrix<T> vectorGS = new NormalMatrix<>(1, vector2);
 
             ArrayList<T> normsGJ = new ArrayList<>();
             ArrayList<T> normsGS = new ArrayList<>();
@@ -110,8 +103,8 @@ public class Measurements<T extends Operations<T>> {
             sparseMatrixGS.fillMatrix();
             Gauss<T> gauss = new Gauss<>();
 
-            NormalMatrix<T> normalMatrixGJ = new NormalMatrix<T>(sparseMatrixGJ.generateIndexes().size(), sparseMatrixGJ);
-            NormalMatrix<T> normalMatrixGS = new NormalMatrix<T>(sparseMatrixGS.generateIndexes().size(), sparseMatrixGS);
+            NormalMatrix<T> normalMatrixGJ = new NormalMatrix<>(sparseMatrixGJ.generateIndexes().size(), sparseMatrixGJ);
+            NormalMatrix<T> normalMatrixGS = new NormalMatrix<>(sparseMatrixGS.generateIndexes().size(), sparseMatrixGS);
 
 
             long start = System.currentTimeMillis();
@@ -197,13 +190,13 @@ public class Measurements<T extends Operations<T>> {
 
         for (int i : values) {
 
-            ArrayList<T> vector = new ArrayList<T>();
+            ArrayList<T> vector = new ArrayList<>();
             for (int k = 0; k < i - 1; k++) {
                 vector.add(el.initializeWithZero());
             }
 
             vector.add(el.initializeWithOne());
-            NormalMatrix<T> vectorForNormal = new NormalMatrix<T>(1, vector);
+            NormalMatrix<T> vectorForNormal = new NormalMatrix<>(1, vector);
 
             GenerateEquation generateEquation = new GenerateEquation(i);
             SparseMatrix<T> sparseMatrixForNormal = new SparseMatrix<>(generateEquation, el);
@@ -289,21 +282,7 @@ public class Measurements<T extends Operations<T>> {
     }
 
 
-    public static void main(String[] args) throws IOException {
-//        Measurements<MyFractions> measure = new Measurements<>();
-//        ArrayList<Integer> tests = new ArrayList<>();
-//        tests.add(10);
-//        measure.verifyIterativeMethods(tests, new MyFractions(0));
-        // measure.compareSparseMatrixWithNormalMatrix(tests, new MyFractions(0));
-//        SparseLibraryMatrix<MyDouble> temp = new SparseLibraryMatrix<>(5, 3);
-//        temp.addItem(1, 2, 0.1);
-//        temp.addItem(3, 2, 0.2);
-//        temp.addItem(1, 4, 0.3);
-
-//        System.out.println(Arrays.toString(temp.matrix.nz));
-//        System.out.println(Arrays.toString(temp.getSparseMatrix().nz_rowcol.data));
-//        System.out.println(Arrays.toString(temp.getSparseMatrix().nz_value.data));
-//        System.out.println(temp.getSparseMatrix().get(1, 4));
+    public static void main(String[] args) {
         SparseLibraryMatrix library = new SparseLibraryMatrix(3);
         library.fillMatrix();
         System.out.println(library.solve());
