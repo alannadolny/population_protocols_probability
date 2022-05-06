@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SparseLibraryMatrix<T extends Operations<T>> {
-    public final DMatrixSparseTriplet matrix;
+    public final DMatrixSparseCSC matrix;
 
     public SparseLibraryMatrix(int n, int initLength) {
-        this.matrix = new DMatrixSparseTriplet(n + 1, n + 1, initLength);
+        this.matrix = new DMatrixSparseCSC(n + 1, n + 1, initLength);
     }
 
     public void addItem(int row, int col, double value) {
@@ -39,13 +39,13 @@ public class SparseLibraryMatrix<T extends Operations<T>> {
     }
 
 
-    public Map<Pair<Integer, Integer>, Double> getSparseMatrix() {
-        Map<Pair<Integer, Integer>, Double> toReturn = new HashMap<>(Map.of());
-        for (int i = 0; i < this.matrix.nz_value.length; i++) {
-            toReturn.put(new Pair<>(this.matrix.nz_rowcol.data[i * 2], this.matrix.nz_rowcol.data[(i * 2) + 1]), this.matrix.nz_value.data[i]);
-        }
-        return toReturn;
-    }
+//    public Map<Pair<Integer, Integer>, Double> getSparseMatrix() {
+//        Map<Pair<Integer, Integer>, Double> toReturn = new HashMap<>(Map.of());
+//        for (int i = 0; i < this.matrix.nz_value.length; i++) {
+//            toReturn.put(new Pair<>(this.matrix.nz_rowcol.data[i * 2], this.matrix.nz_rowcol.data[(i * 2) + 1]), this.matrix.nz_value.data[i]);
+//        }
+//        return toReturn;
+//    }
 
 //    public void solve(){
 //        this.matrix.
