@@ -53,38 +53,34 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                                 matrix.getSparseMatrix().remove(new Pair<>(index, i));
                             }
                         }
-
                     }
-
                 }
+            }
 
-
-            for (int i = leadingNumberIndex + 1; i < matrix.countRows(); i++) {
-                //to juz zoptymalizowalem, ale trzeba jeszcze w srodku tego ifa coś ostro zmienić
-                //po wykomentowaniu kodu ponizej sparse matrix jest wolniejsza o okolo 50ms XD czyli dalej wzglednie duzo
-                //podsumowujac ten fragment wykonuje sie okolo 500ms
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
-                    T x;
-                        if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
-                            x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, leadingNumberIndex)));
-                            x.divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)));
-                            for (int j = leadingNumberIndex; j < matrix.countRows() + 1; j++) {
-                                if (j == leadingNumberIndex) {
-                                    matrix.getSparseMatrix().remove(new Pair<>(i, leadingNumberIndex));
-                                    continue;
-                                }
-                                if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, j))) {
-                                    T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
-                                    toSubtract.multiply(x);
-                                    if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                                        matrix.getSparseMatrix().get(new Pair<>(i, j)).subtract(toSubtract);
-                                    } else {
-                                        toSubtract.reverseSign();
-                                        matrix.getSparseMatrix().put(new Pair<>(i, j), toSubtract);
-                                    }
+            for (int i = leadingNumberIndex + 1; i < numRows; i++) {
+                Pair<Integer, Integer> pairWithLeading = new Pair<>(i, leadingNumberIndex);
+                if (matrix.getSparseMatrix().containsKey(pairWithLeading)) {
+                    if (matrix.getSparseMatrix().containsKey(pairWithLeading)) {
+                        T x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairWithLeading));
+                        x.divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)));
+                        for (int j = leadingNumberIndex; j < numRows + 1; j++) {
+                            Pair<Integer, Integer> pairIJ = new Pair<>(i, j);
+                            Pair<Integer, Integer> pairLeadingJ = new Pair<>(leadingNumberIndex, j);
+                            if (j == leadingNumberIndex) {
+                                matrix.getSparseMatrix().remove(pairWithLeading);
+                            }
+                            else if (matrix.getSparseMatrix().containsKey(pairLeadingJ)) {
+                                T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairLeadingJ));
+                                toSubtract.multiply(x);
+                                if (matrix.getSparseMatrix().containsKey(pairIJ)) {
+                                    matrix.getSparseMatrix().get(pairIJ).subtract(toSubtract);
+                                } else {
+                                    toSubtract.reverseSign();
+                                    matrix.getSparseMatrix().put(pairIJ, toSubtract);
                                 }
                             }
                         }
+                    }
                 }
 
             }
@@ -94,22 +90,24 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
 
         for (int i = numRows - 1; i >= 0; i--) {
             int resultIndex;
-            for (int j = matrix.countRows() - 1; j > i; j--) {
+            Pair<Integer, Integer> pairINumRows = new Pair<>(i, numRows);
+            for (int j = numRows - 1; j > i; j--) {
+                Pair<Integer, Integer> pairIJ = new Pair<>(i, j);
                 T temp;
-                resultIndex = matrix.countRows() - 1 - j;
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                    temp = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, j)));
+                resultIndex = numRows - 1 - j;
+                if (matrix.getSparseMatrix().containsKey(pairIJ)) {
+                    temp = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairIJ));
                     temp.multiply(matrix.getTypeElement().initialize(results.get(resultIndex)));
                 } else temp = matrix.getTypeElement().initializeWithZero();
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, matrix.countRows())))
-                    matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).subtract(temp);
+                if (matrix.getSparseMatrix().containsKey(pairINumRows))
+                    matrix.getSparseMatrix().get(pairINumRows).subtract(temp);
                 else {
                     temp.reverseSign();
-                    matrix.getSparseMatrix().put(new Pair<>(i, matrix.countRows()), temp);
+                    matrix.getSparseMatrix().put(pairINumRows, temp);
                 }
             }
-            matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex - 1, leadingNumberIndex - 1)));
-            results.add(matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())));
+            matrix.getSparseMatrix().get(pairINumRows).divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex - 1, leadingNumberIndex - 1)));
+            results.add(matrix.getSparseMatrix().get(pairINumRows));
             leadingNumberIndex--;
         }
         Collections.reverse(results);
@@ -120,20 +118,22 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
 
     public NormalMatrix<T> GJ(SparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
-        for (int i = 0; i < matrix.countRows(); i++) {
+        int numCols = matrix.countColumns();
+        int numRows = matrix.countRows();
+        for (int i = 0; i < numRows; i++) {
             results.add(matrix.getTypeElement().initializeWithZero());
         }
         for (int h = 0; h < iter; h++) {
             List<T> newResult = new ArrayList<>();
-            for (int i = 0; i < matrix.countRows(); i++) {
+            for (int i = 0; i < numRows; i++) {
                 newResult.add(matrix.getTypeElement().initializeWithZero());
                 T summary;
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(matrix.countColumns() - 2, i))) {
-                    summary = matrix.getSparseMatrix().get(new Pair<>(matrix.countColumns() - 2, i));
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(numCols - 2, i))) {
+                    summary = matrix.getSparseMatrix().get(new Pair<>(numCols - 2, i));
                 } else {
                     summary = matrix.getTypeElement().initializeWithZero();
                 }
-                for (int j = 0; j < matrix.countColumns() - 1; j++) {
+                for (int j = 0; j < numCols - 1; j++) {
                     if (i != j) {
                         T temp2 = matrix.getTypeElement().initializeWithZero();
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
@@ -158,13 +158,15 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
 
     public NormalMatrix<T> GS(SparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
-        for (int i = 0; i < matrix.countRows(); i++) {
+        int numCols = matrix.countColumns();
+        int numRows = matrix.countRows();
+        for (int i = 0; i < numRows; i++) {
             results.add(matrix.getTypeElement().initializeWithZero());
         }
         for (int h = 0; h < iter; h++) {
-            for (int i = 0; i < matrix.countRows(); i++) {
+            for (int i = 0; i < numRows; i++) {
                 T summary = matrix.getTypeElement().initializeWithZero();
-                for (int j = 0; j < matrix.countColumns() - 1; j++) {
+                for (int j = 0; j < numCols - 1; j++) {
                     if (i != j) {
                         T temp2 = matrix.getTypeElement().initializeWithZero();
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
@@ -175,8 +177,8 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                     }
                 }
                 T temp = matrix.getTypeElement().initializeWithZero();
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(matrix.countColumns() - 2, i))) {
-                    temp = matrix.getSparseMatrix().get(new Pair<>(matrix.countColumns() - 2, i));
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(numCols - 2, i))) {
+                    temp = matrix.getSparseMatrix().get(new Pair<>(numCols - 2, i));
                 }
                 temp.subtract(summary);
                 if (matrix.getSparseMatrix().containsKey(new Pair<>(i, i))) {
