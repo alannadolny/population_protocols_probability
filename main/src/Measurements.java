@@ -36,7 +36,7 @@ public class Measurements<T extends Operations<T>> {
         return initialValue;
     }
 
-    public void getIterationNumber(int size, double expectedPrecision, T el) throws IOException {
+    public void getIterationNumber(int size, double expectedPrecision, T el, String type) throws IOException {
         int iteration = 1;
         boolean gj = false, gs = false;
         while (true) {
@@ -70,11 +70,11 @@ public class Measurements<T extends Operations<T>> {
 
 
             if (this.getMaximumNorm(normsGJ).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0 && !gj) {
-                this.saveResults("GJ - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix1", "C:/Users/gruby/population_protocols_probability/data/");
+                this.saveResults("GJ - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix1" + type, "C:/Users/gruby/population_protocols_probability/data/");
                 gj = true;
             }
             if (this.getMaximumNorm(normsGS).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0 && !gs) {
-                this.saveResults("GS - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix2", "C:/Users/gruby/population_protocols_probability/data/");
+                this.saveResults("GS - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix2" + type, "C:/Users/gruby/population_protocols_probability/data/");
                 gs = true;
             }
             if (gj && gs) break;
@@ -82,7 +82,7 @@ public class Measurements<T extends Operations<T>> {
         }
     }
 
-    public void compareJacobiWithSeidelNormalMatrix(ArrayList<Integer> values, T el) throws IOException {
+    public void compareJacobiWithSeidelNormalMatrix(ArrayList<Integer> values, T el, String type) throws IOException {
 
         StringBuilder results = new StringBuilder();
 
@@ -145,10 +145,10 @@ public class Measurements<T extends Operations<T>> {
 
         }
 
-        this.saveResults(results.toString(), "compareJacobiWithSeidelNormalMatrix", "C:/Users/gruby/population_protocols_probability/data/");
+        this.saveResults(results.toString(), "compareJacobiWithSeidelNormalMatrix" + type, "C:/Users/gruby/population_protocols_probability/data/");
     }
 
-    public void compareJacobiWithSeidelSparseMatrix(ArrayList<Integer> values, T el) throws IOException {
+    public void compareJacobiWithSeidelSparseMatrix(ArrayList<Integer> values, T el, String type) throws IOException {
 
         StringBuilder results = new StringBuilder();
 
@@ -195,11 +195,11 @@ public class Measurements<T extends Operations<T>> {
 
         }
 
-        this.saveResults(results.toString(), "compareJacobiWithSeidelSparseMatrix", "C:/Users/gruby/population_protocols_probability/data/");
+        this.saveResults(results.toString(), "compareJacobiWithSeidelSparseMatrix" + type, "C:/Users/gruby/population_protocols_probability/data/");
     }
 
 
-    public void compareSparseMatrixWithNormalMatrix(ArrayList<Integer> values, T el) throws IOException {
+    public void compareSparseMatrixWithNormalMatrix(ArrayList<Integer> values, T el, String type) throws IOException {
 
         StringBuilder results = new StringBuilder();
 
@@ -257,10 +257,10 @@ public class Measurements<T extends Operations<T>> {
 
         }
 
-        this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix", "C:/Users/gruby/population_protocols_probability/data/");
+        this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix" + type, "C:/Users/gruby/population_protocols_probability/data/");
     }
 
-    public void verifyIterativeMethods(ArrayList<Integer> values, T el) throws IOException {
+    public void verifyIterativeMethods(ArrayList<Integer> values, T el, String type) throws IOException {
 
         StringBuilder results = new StringBuilder();
 
@@ -297,18 +297,18 @@ public class Measurements<T extends Operations<T>> {
 
         }
 
-        this.saveResults(results.toString(), "verifyIterativeMethod", "C:/Users/gruby/population_protocols_probability/data/");
+        this.saveResults(results.toString(), "verifyIterativeMethod" + type, "C:/Users/gruby/population_protocols_probability/data/");
     }
 
 
     public static void main(String[] args) throws IOException {
         Measurements<MyDouble> measurements = new Measurements<>();
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 10);
-        measurements.verifyIterativeMethods(toCalculate, new MyDouble(0D));
-        measurements.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D));
-        measurements.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D));
-        measurements.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D));
-        measurements.getIterationNumber(5, 0.00000000001, new MyDouble(0D));
+        Collections.addAll(toCalculate, 15);
+        // measurements.verifyIterativeMethods(toCalculate, new MyDouble(0D));
+        measurements.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+        //measurements.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D));
+        //measurements.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D));
+        //measurements.getIterationNumber(5, 0.00000000001, new MyDouble(0D));
     }
 }
