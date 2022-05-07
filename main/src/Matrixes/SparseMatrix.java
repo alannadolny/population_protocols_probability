@@ -125,7 +125,7 @@ public class SparseMatrix<T extends Operations<T>> {
             for (int j = 0; j < counter + 1; j++) {
                 if (this.sparseMatrix.containsKey(new Pair<>(i, j)))
                     result.append(df.format(this.sparseMatrix.get(new Pair<>(i, j)).returnValue())).append(" ");
-                else result.append("+0,0000 ");
+                else result.append("+X.XXXX ");
             }
             result.append("\n");
         }

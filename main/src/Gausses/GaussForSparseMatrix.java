@@ -8,6 +8,7 @@ import javafx.util.Pair;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class GaussForSparseMatrix<T extends Operations<T>> {
@@ -69,7 +70,11 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
                             x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, leadingNumberIndex)));
                             x.divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)));
-                            for (int j = 0; j < matrix.countRows() + 1; j++) {
+                            for (int j = leadingNumberIndex; j < matrix.countRows() + 1; j++) {
+                                if (j == leadingNumberIndex) {
+                                    matrix.getSparseMatrix().remove(new Pair<>(i, leadingNumberIndex));
+                                    continue;
+                                }
                                 if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, j))) {
                                     T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
                                     toSubtract.multiply(x);
