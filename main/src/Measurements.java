@@ -231,14 +231,17 @@ public class Measurements<T extends Operations<T>> {
             ArrayList<T> normsForSpareMatrix = new ArrayList<>();
 
             long start = System.currentTimeMillis();
-            NormalMatrix<T> resultNormalMatrix = gaussForNormal.G(normalMatrixPG, vectorForNormal, "PG");
+            NormalMatrix<T> resultForSparseMatrix = gauss.G(sparseMatrixPG, "PG");
             long stop = System.currentTimeMillis();
-            long timeForNormal = stop - start;
+            long timeForSparse = stop - start;
 
             start = System.currentTimeMillis();
-            NormalMatrix<T> resultForSparseMatrix = gauss.G(sparseMatrixPG, "PG");
+            NormalMatrix<T> resultNormalMatrix = gaussForNormal.G(normalMatrixPG, vectorForNormal, "PG");
             stop = System.currentTimeMillis();
-            long timeForSparse = stop - start;
+            long timeForNormal = stop - start;
+
+            System.out.println("Sparse: " + timeForSparse);
+            System.out.println("Normal: " + timeForNormal);
 
             for (int j = 0; j < normalMatrixPG.getMatrix().size(); j++) {
                 for (int k = 0; k < resultNormalMatrix.getMatrix().get(j).size(); k++) {
@@ -304,7 +307,7 @@ public class Measurements<T extends Operations<T>> {
     public static void main(String[] args) throws IOException {
         Measurements<MyDouble> measurements = new Measurements<>();
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 15);
+        Collections.addAll(toCalculate, 10);
         // measurements.verifyIterativeMethods(toCalculate, new MyDouble(0D));
         measurements.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
         //measurements.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D));

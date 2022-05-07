@@ -66,17 +66,12 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                 //podsumowujac ten fragment wykonuje sie okolo 500ms
                 if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
                     T x;
-                    if (matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)).equals(matrix.getTypeElement().initializeWithZero()))
-                        x = matrix.getTypeElement().initializeWithZero();
-                    else {
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
                             x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, leadingNumberIndex)));
                             x.divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)));
                         } else {
                             x = matrix.getTypeElement().initializeWithZero();
                         }
-                    }
-
                     for (int j = 0; j < matrix.countRows() + 1; j++) {
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, j))) {
                             T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
@@ -92,6 +87,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                 }
 
             }
+
             leadingNumberIndex++;
         }
 
@@ -116,11 +112,11 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
             results.add(matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())));
             leadingNumberIndex--;
         }
-
         Collections.reverse(results);
 
         return new NormalMatrix<>(1, results);
     }
+
 
     public NormalMatrix<T> GJ(SparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
