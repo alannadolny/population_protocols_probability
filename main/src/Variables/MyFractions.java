@@ -119,8 +119,6 @@ public class MyFractions implements Operations<MyFractions> {
         } else {
             numbersBehindComma = behindComma.length();
         }
-        System.out.println(Math.pow(10, numbersBehindComma));
-        System.out.println(number * Math.pow(10, numbersBehindComma));
         BigInteger numerator = new BigInteger(String.valueOf((long) (number * Math.pow(10, numbersBehindComma))));
         BigInteger denumerator = new BigInteger(String.valueOf((long) Math.pow(10, numbersBehindComma)));
         return new MyFractions(numerator, denumerator);
