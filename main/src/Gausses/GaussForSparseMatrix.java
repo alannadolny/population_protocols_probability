@@ -69,21 +69,19 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
                             x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, leadingNumberIndex)));
                             x.divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)));
-                        } else {
-                            x = matrix.getTypeElement().initializeWithZero();
-                        }
-                    for (int j = 0; j < matrix.countRows() + 1; j++) {
-                        if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, j))) {
-                            T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
-                            toSubtract.multiply(x);
-                            if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                                matrix.getSparseMatrix().get(new Pair<>(i, j)).subtract(toSubtract);
-                            } else {
-                                toSubtract.reverseSign();
-                                matrix.getSparseMatrix().put(new Pair<>(i, j), toSubtract);
+                            for (int j = 0; j < matrix.countRows() + 1; j++) {
+                                if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, j))) {
+                                    T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, j)));
+                                    toSubtract.multiply(x);
+                                    if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
+                                        matrix.getSparseMatrix().get(new Pair<>(i, j)).subtract(toSubtract);
+                                    } else {
+                                        toSubtract.reverseSign();
+                                        matrix.getSparseMatrix().put(new Pair<>(i, j), toSubtract);
+                                    }
+                                }
                             }
                         }
-                    }
                 }
 
             }
