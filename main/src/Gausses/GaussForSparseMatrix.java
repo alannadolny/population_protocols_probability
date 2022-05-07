@@ -35,7 +35,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
                 if (findRowWithMaximumElement(matrix, leadingNumberIndex) != leadingNumberIndex) {
                     int index = findRowWithMaximumElement(matrix, leadingNumberIndex);
 
-
+                    //to zajmuje okolo 10ms
                     for (int i = 0; i < matrix.countColumns(); i++) {
 
                         if (matrix.getSparseMatrix().containsKey(new Pair<>(index, i)) && matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, i))) {
@@ -61,6 +61,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
 
 
             for (int i = leadingNumberIndex + 1; i < matrix.countRows(); i++) {
+                //to juz zoptymalizowalem, ale trzeba jeszcze w srodku tego ifa coś ostro zmienić
                 if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
                     T x;
                     if (matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)).equals(matrix.getTypeElement().initializeWithZero()))
@@ -92,7 +93,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
             leadingNumberIndex++;
         }
 
-
+        //to zajmuje okolo 100ms dla 15 el
         for (int i = matrix.countRows() - 1; i >= 0; i--) {
             int resultIndex;
             for (int j = matrix.countRows() - 1; j > i; j--) {
