@@ -62,6 +62,8 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
 
             for (int i = leadingNumberIndex + 1; i < matrix.countRows(); i++) {
                 //to juz zoptymalizowalem, ale trzeba jeszcze w srodku tego ifa coś ostro zmienić
+                //po wykomentowaniu kodu ponizej sparse matrix jest wolniejsza o okolo 50ms XD czyli dalej wzglednie duzo
+                //podsumowujac ten fragment wykonuje sie okolo 500ms
                 if (matrix.getSparseMatrix().containsKey(new Pair<>(i, leadingNumberIndex))) {
                     T x;
                     if (matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, leadingNumberIndex)).equals(matrix.getTypeElement().initializeWithZero()))
@@ -97,19 +99,17 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
         for (int i = matrix.countRows() - 1; i >= 0; i--) {
             int resultIndex;
             for (int j = matrix.countRows() - 1; j > i; j--) {
-                T temp, nextTemp;
+                T temp;
                 resultIndex = matrix.countRows() - 1 - j;
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j)))
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
                     temp = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(i, j)));
-                else temp = matrix.getTypeElement().initializeWithZero();
-                nextTemp = matrix.getTypeElement().initialize(results.get(resultIndex));
-                temp.multiply(nextTemp);
+                    temp.multiply(matrix.getTypeElement().initialize(results.get(resultIndex)));
+                } else temp = matrix.getTypeElement().initializeWithZero();
                 if (matrix.getSparseMatrix().containsKey(new Pair<>(i, matrix.countRows())))
                     matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).subtract(temp);
                 else {
-                    T el = matrix.getTypeElement().initializeWithZero();
-                    el.subtract(temp);
-                    matrix.getSparseMatrix().put(new Pair<>(i, matrix.countRows()), el);
+                    temp.reverseSign();
+                    matrix.getSparseMatrix().put(new Pair<>(i, matrix.countRows()), temp);
                 }
             }
             matrix.getSparseMatrix().get(new Pair<>(i, matrix.countRows())).divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex - 1, leadingNumberIndex - 1)));
