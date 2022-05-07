@@ -6,6 +6,8 @@ import Matrixes.SparseLibraryMatrix;
 import Matrixes.SparseMatrix;
 import MonteCarlo.SolveMatrix;
 import Variables.MyDouble;
+import Variables.MyFloat;
+import Variables.MyFractions;
 import Variables.Operations;
 
 import java.io.IOException;
@@ -305,13 +307,31 @@ public class Measurements<T extends Operations<T>> {
 
 
     public static void main(String[] args) throws IOException {
-        Measurements<MyDouble> measurements = new Measurements<>();
+        Measurements<MyDouble> measurementsDouble = new Measurements<>();
+        Measurements<MyFloat> measurementsFloat = new Measurements<>();
+        Measurements<MyFractions> measurementsFractions = new Measurements<>();
+
+        // Double
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 10);
-        // measurements.verifyIterativeMethods(toCalculate, new MyDouble(0D));
-        measurements.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-        //measurements.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D));
-        //measurements.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D));
-        //measurements.getIterationNumber(5, 0.00000000001, new MyDouble(0D));
+        Collections.addAll(toCalculate, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+        measurementsDouble.verifyIterativeMethods(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.getIterationNumber(5, 0.00000000001, new MyDouble(0D), "Double");
+
+        //Floats
+        measurementsFloat.verifyIterativeMethods(toCalculate, new MyFloat(0F), "Floats");
+        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
+        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+        measurementsFloat.getIterationNumber(5, 0.00000000001, new MyFloat(0F), "Floats");
+
+        //Fractions
+        measurementsFractions.verifyIterativeMethods(toCalculate, new MyFractions(0), "Fractions");
+        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
+        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+        measurementsFractions.getIterationNumber(5, 0.00000000001, new MyFractions(0), "Fractions");
     }
 }

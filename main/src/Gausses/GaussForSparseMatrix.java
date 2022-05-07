@@ -5,10 +5,8 @@ import Matrixes.SparseMatrix;
 import Variables.Operations;
 import javafx.util.Pair;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class GaussForSparseMatrix<T extends Operations<T>> {
@@ -31,27 +29,27 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
     public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
         List<T> results = new ArrayList<>();
         int leadingNumberIndex = 0;
-        while (leadingNumberIndex < matrix.countRows()) {
-            if (mode.equals("PG"))
-                if (findRowWithMaximumElement(matrix, leadingNumberIndex) != leadingNumberIndex) {
-                    int index = findRowWithMaximumElement(matrix, leadingNumberIndex);
-
-                    //to zajmuje okolo 10ms
-                    for (int i = 0; i < matrix.countColumns(); i++) {
-
-                        if (matrix.getSparseMatrix().containsKey(new Pair<>(index, i)) && matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, i))) {
+        int numCols = matrix.countColumns();
+        int numRows = matrix.countRows();
+        while (leadingNumberIndex < numRows) {
+            if (mode.equals("PG")) {
+                int index = findRowWithMaximumElement(matrix, leadingNumberIndex);
+                if (index != leadingNumberIndex) {
+                    for (int i = 0; i < numCols; i++) {
+                        Pair<Integer, Integer> pair = new Pair<>(index, i);
+                        Pair<Integer, Integer> pairWithLeading = new Pair<>(leadingNumberIndex, i);
+                        boolean firstCondition = matrix.getSparseMatrix().containsKey(pair);
+                        boolean secondCondition = matrix.getSparseMatrix().containsKey(pairWithLeading);
+                        if (firstCondition && secondCondition) {
                             T firstNumber = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(index, i)));
-                            T secondNumber = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, i)));
-                            matrix.getSparseMatrix().put(new Pair<>(index, i), secondNumber);
-                            matrix.getSparseMatrix().put(new Pair<>(leadingNumberIndex, i), firstNumber);
+                            matrix.getSparseMatrix().put(pair, matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairWithLeading)));
+                            matrix.getSparseMatrix().put(pairWithLeading, firstNumber);
                         } else {
-                            if (!matrix.getSparseMatrix().containsKey(new Pair<>(index, i)) && matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, i))) {
-                                T firstNumber = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex, i)));
-                                matrix.getSparseMatrix().put(new Pair<>(index, i), firstNumber);
-                                matrix.getSparseMatrix().remove(new Pair<>(leadingNumberIndex, i));
-                            } else if (matrix.getSparseMatrix().containsKey(new Pair<>(index, i)) && !matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex, i))) {
-                                T firstNumber = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(index, i)));
-                                matrix.getSparseMatrix().put(new Pair<>(leadingNumberIndex, i), firstNumber);
+                            if (!firstCondition && secondCondition) {
+                                matrix.getSparseMatrix().put(new Pair<>(index, i),  matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairWithLeading)));
+                                matrix.getSparseMatrix().remove(pairWithLeading);
+                            } else if (firstCondition) {
+                                matrix.getSparseMatrix().put(pairWithLeading, matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pair)));
                                 matrix.getSparseMatrix().remove(new Pair<>(index, i));
                             }
                         }
@@ -94,8 +92,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
             leadingNumberIndex++;
         }
 
-        //to zajmuje okolo 100ms dla 15 el
-        for (int i = matrix.countRows() - 1; i >= 0; i--) {
+        for (int i = numRows - 1; i >= 0; i--) {
             int resultIndex;
             for (int j = matrix.countRows() - 1; j > i; j--) {
                 T temp;
