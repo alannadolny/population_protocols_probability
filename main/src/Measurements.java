@@ -9,14 +9,13 @@ import Variables.MyDouble;
 import Variables.MyFloat;
 import Variables.MyFractions;
 import Variables.Operations;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class Measurements<T extends Operations<T>> {
@@ -310,6 +309,18 @@ public class Measurements<T extends Operations<T>> {
         Measurements<MyDouble> measurementsDouble = new Measurements<>();
         Measurements<MyFloat> measurementsFloat = new Measurements<>();
         Measurements<MyFractions> measurementsFractions = new Measurements<>();
+
+        //sizes:
+        // 100 -> 5151
+        // 90 -> 4186
+        // 80 -> 3321
+        // 70 -> 2556
+        // 60 -> 1891
+        // 50 -> 1326
+        // 40 -> 861
+        // 30 -> 496
+        // 20 -> 231
+        // 10 -> 66
 
         // Double
         ArrayList<Integer> toCalculate = new ArrayList<>();
