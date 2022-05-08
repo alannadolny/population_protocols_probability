@@ -1,1 +1,0 @@
-GS - precision: 1.0E-14 in iteration: 627
