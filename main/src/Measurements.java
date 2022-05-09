@@ -1,5 +1,6 @@
 import Gausses.Gauss;
 import Gausses.GaussForSparseMatrix;
+import Gausses.OptimizedGaussForSparseMatrix;
 import Matrixes.GenerateEquation;
 import Matrixes.NormalMatrix;
 import Matrixes.SparseLibraryMatrix;
@@ -303,7 +304,7 @@ public class Measurements<T extends Operations<T>> {
 
         }
 
- //       this.saveResults(results.toString(), "verifyIterativeMethod" + type, "C:/Users/gruby/population_protocols_probability/data/");
+        //       this.saveResults(results.toString(), "verifyIterativeMethod" + type, "C:/Users/gruby/population_protocols_probability/data/");
         this.saveResults(results.toString(), "verifyIterativeMethod" + type, "data/");
     }
 
@@ -312,6 +313,14 @@ public class Measurements<T extends Operations<T>> {
         Measurements<MyDouble> measurementsDouble = new Measurements<>();
         Measurements<MyFloat> measurementsFloat = new Measurements<>();
         Measurements<MyFractions> measurementsFractions = new Measurements<>();
+
+        // temp
+
+        GenerateEquation eq = new GenerateEquation(3);
+        SparseMatrix<MyDouble> sparse = new SparseMatrix<>(eq, new MyDouble(0D));
+        sparse.fillMatrix();
+        OptimizedGaussForSparseMatrix<MyDouble> optimized = new OptimizedGaussForSparseMatrix<>();
+        optimized.G(sparse, "PG");
 
         //sizes:
         // 100 -> 5151
@@ -326,17 +335,17 @@ public class Measurements<T extends Operations<T>> {
         // 10 -> 66
 
         // Double
-        ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 10, 20, 30, 40, 50);
+//        ArrayList<Integer> toCalculate = new ArrayList<>();
+//        Collections.addAll(toCalculate, 10, 20, 30, 40, 50);
 //        measurementsDouble.verifyIterativeMethods(toCalculate, new MyDouble(0D), "Double");
 //        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
 //        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
 //        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-        for (int i = 10; i <= 30; i += 10) {
+//        for (int i = 10; i <= 30; i += 10) {
 //            measurementsDouble.getIterationNumber(i, 0.000001, new MyDouble(0D), "Double-6" + i);
 //            measurementsDouble.getIterationNumber(i, 0.00000000001, new MyDouble(0D), "Double-10" + i);
-            measurementsDouble.getIterationNumber(i, 0.00000000000001, new MyDouble(0D), "Double-16" + i);
-        }
+//            measurementsDouble.getIterationNumber(i, 0.00000000000001, new MyDouble(0D), "Double-16" + i);
+//        }
 
         // Float
 //        measurementsFloat.verifyIterativeMethods(toCalculate, new MyFloat(0F), "Floats");
