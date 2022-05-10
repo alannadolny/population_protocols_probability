@@ -6,38 +6,73 @@ import Variables.Operations;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
-    public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
-        int numCols = matrix.countColumns();
-        int numRows = matrix.countRows();
-//        System.out.println(matrix);
-        //pewnie trzeba bedzie wrzucic to w petle while
-        for (Map.Entry<Pair<Integer, Integer>, T> entry : matrix.getSparseMatrix().entrySet()) {
-            if (!entry.getKey().getKey().equals(entry.getKey().getValue()) && entry.getKey().getKey() > entry.getKey().getValue() && entry.getKey().getValue() < numRows) {
-                Pair<Integer, Integer> leadingNumberIndex = new Pair<>(entry.getKey().getValue(), entry.getKey().getValue());
-                T leadingNumber = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(leadingNumberIndex));
-                T currentNumber = matrix.getTypeElement().initialize(entry.getValue());
-                currentNumber.divide(leadingNumber);
-                for (int i = 0; i < numCols; i++) {
-                    if (matrix.getSparseMatrix().containsKey(new Pair<>(leadingNumberIndex.getKey(), i))) {
-                        T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(leadingNumberIndex.getKey(), i)));
-                        toSubtract.multiply(currentNumber);
-                        //poprawic indexy od ktorych jest odejmowane, to powinno wyzerowac pod wiodacymi
-//                        System.out.println(entry.getKey() + " : " + matrix.getSparseMatrix().get(entry.getKey()).returnValue());
-                        matrix.getSparseMatrix().get(entry.getKey()).subtract(toSubtract);
-                    } else {
-                        //dodac case dla liczb obok wiodacych, tych ktorych macierz nie zawiera
+
+        public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
+            List<T> results = new ArrayList<>();
+            int numCols = matrix.countColumns();
+            int numRows = matrix.countRows();
+            int leadingNumber = 0;
+            while (leadingNumber < numRows) {
+                int finalLeadingNumber = leadingNumber;
+                List<Integer> toOperate = matrix.getSparseMatrix().keySet().stream().filter(t -> t.getValue().equals(finalLeadingNumber) && t.getKey() > finalLeadingNumber).map(Pair::getKey).collect(Collectors.toList());
+
+                for (Integer el : toOperate) {
+                    T x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(el, finalLeadingNumber)));
+                    x.divide(matrix.getSparseMatrix().get(new Pair<>(finalLeadingNumber, finalLeadingNumber)));
+                    for (int i = finalLeadingNumber + 1; i < numCols; i++) {
+                        Pair<Integer, Integer> pairIJ = new Pair<>(el, i);
+                        Pair<Integer, Integer> pairLeadingJ = new Pair<>(finalLeadingNumber, i);
+                        if (matrix.getSparseMatrix().containsKey(pairLeadingJ)) {
+                            T toSubtract = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairLeadingJ));
+                            toSubtract.multiply(x);
+                            if (matrix.getSparseMatrix().containsKey(pairIJ)) {
+                                matrix.getSparseMatrix().get(pairIJ).subtract(toSubtract);
+                            } else {
+                                toSubtract.reverseSign();
+                                matrix.getSparseMatrix().put(pairIJ, toSubtract);
+                            }
+                        }
                     }
                 }
+
+                leadingNumber++;
             }
+
+            System.out.println(matrix);
+
+            for (int i = numRows - 1; i >= 0; i--) {
+                int resultIndex;
+                Pair<Integer, Integer> pairINumRows = new Pair<>(i, numRows);
+                for (int j = numRows - 1; j > i; j--) {
+                    Pair<Integer, Integer> pairIJ = new Pair<>(i, j);
+                    T temp;
+                    resultIndex = numRows - 1 - j;
+                    if (matrix.getSparseMatrix().containsKey(pairIJ)) {
+                        temp = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairIJ));
+                        temp.multiply(matrix.getTypeElement().initialize(results.get(resultIndex)));
+                    } else temp = matrix.getTypeElement().initializeWithZero();
+                    if (matrix.getSparseMatrix().containsKey(pairINumRows))
+                        matrix.getSparseMatrix().get(pairINumRows).subtract(temp);
+                    else {
+                        temp.reverseSign();
+                        matrix.getSparseMatrix().put(pairINumRows, temp);
+                    }
+                }
+                matrix.getSparseMatrix().get(pairINumRows).divide(matrix.getSparseMatrix().get(new Pair<>(leadingNumber - 1, leadingNumber - 1)));
+                results.add(matrix.getSparseMatrix().get(pairINumRows));
+                leadingNumber--;
+            }
+            Collections.reverse(results);
+
+            return new NormalMatrix<>(1, results);
         }
-//        System.out.println(matrix);
-        List<T> temp = new ArrayList<>();
-        return new NormalMatrix<>(1, temp);
-    }
+
 
     public NormalMatrix<T> GJ(SparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
