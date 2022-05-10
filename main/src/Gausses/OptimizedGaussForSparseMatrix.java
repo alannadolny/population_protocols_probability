@@ -89,13 +89,14 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
                 if (!entry.getKey().getKey().equals(entry.getKey().getValue()) && entry.getKey().getValue() < numCols) {
                     T temp = entry.getValue().initialize(entry.getValue());
                     temp.multiply(results.get(entry.getKey().getValue()));
+                    temp.add(tabOfSummary.get(entry.getKey().getKey()));
                     tabOfSummary.set(entry.getKey().getKey(), temp);
                 }
             }
             for (int i = 0; i < numRows; i++) {
                 T temp = matrix.getTypeElement().initializeWithZero();
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(numCols - 1, i))) {
-                    temp = matrix.getSparseMatrix().get(new Pair<>(numCols - 1, i));
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, numCols))) {
+                    temp = matrix.getSparseMatrix().get(new Pair<>(i, numCols));
                 }
                 temp.subtract(tabOfSummary.get(i));
                 temp.divide(matrix.getSparseMatrix().get(new Pair<>(i, i)));
