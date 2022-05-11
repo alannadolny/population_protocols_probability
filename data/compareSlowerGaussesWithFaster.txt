@@ -1,0 +1,6 @@
+sparse matrix PG - slower: 237306
+sparse matrix PG - faster: 81157
+sparse matrix GJ - slower: 145566
+sparse matrix GJ - faster: 395
+sparse matrix GS - slower: 168928
+sparse matrix GS - faster: 488

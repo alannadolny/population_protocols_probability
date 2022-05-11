@@ -137,9 +137,8 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
                 T temp = matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()));
                 temp.subtract(newResult.get(i));
                 temp.divide(matrix.getSparseMatrix().get(new Pair<>(i, i)));
-                newResult.set(i, temp);
+                results.set(i, temp);
             }
-            results = newResult;
         }
         return new NormalMatrix<>(1, results);
     }
@@ -148,29 +147,49 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         List<T> results = new ArrayList<>();
         int numCols = matrix.countColumns() - 1;
         int numRows = matrix.countRows();
+        List<Pair<Pair<Integer, Integer>, T>> mapConvertedToList = new ArrayList<>();
+        for (Map.Entry<Pair<Integer, Integer>, T> entry : matrix.getSparseMatrix().entrySet()) {
+            mapConvertedToList.add(new Pair<>(new Pair<>(entry.getKey().getKey(), entry.getKey().getValue()), entry.getValue()));
+        }
+        mapConvertedToList.sort(((o1, o2) -> {
+            if (o1.getKey().getKey().compareTo(o2.getKey().getKey()) == 0) {
+                return o1.getKey().getValue().compareTo(o2.getKey().getValue());
+            } else {
+                return o1.getKey().getKey().compareTo(o2.getKey().getKey());
+            }
+        }));
         for (int i = 0; i < numRows; i++) {
             results.add(matrix.getTypeElement().initializeWithZero());
         }
         for (int h = 0; h < iter; h++) {
-            List<T> tabOfSummary = new ArrayList<>();
-            for (int i = 0; i < numRows; i++) {
-                tabOfSummary.add(matrix.getTypeElement().initializeWithZero());
-            }
-            for (Map.Entry<Pair<Integer, Integer>, T> entry : matrix.getSparseMatrix().entrySet()) {
-                if (!entry.getKey().getKey().equals(entry.getKey().getValue()) && entry.getKey().getValue() < numCols) {
-                    T temp = entry.getValue().initialize(entry.getValue());
-                    temp.multiply(results.get(entry.getKey().getValue()));
-                    temp.add(tabOfSummary.get(entry.getKey().getKey()));
-                    tabOfSummary.set(entry.getKey().getKey(), temp);
+            T summary = matrix.getTypeElement().initializeWithZero();
+            for (int i = 0; i < mapConvertedToList.size(); i++) {
+                if (!mapConvertedToList.get(i).getKey().getKey().equals(mapConvertedToList.get(i).getKey().getValue()) && mapConvertedToList.get(i).getKey().getValue() < numCols) {
+                    T temp = mapConvertedToList.get(i).getValue().initialize(mapConvertedToList.get(i).getValue());
+                    temp.multiply(results.get(mapConvertedToList.get(i).getKey().getValue()));
+                    summary.add(temp);
                 }
-            }
-            for (int i = 0; i < numRows; i++) {
-                T temp = matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()));
-                temp.subtract(tabOfSummary.get(i));
-                temp.divide(matrix.getSparseMatrix().get(new Pair<>(i, i)));
-                results.set(i, temp);
+                if (mapConvertedToList.size() > i + 1) {
+                    if (!mapConvertedToList.get(i).getKey().getKey().equals(mapConvertedToList.get(i + 1).getKey().getKey())) {
+                        summary = addToResultVector(matrix, results, numCols, mapConvertedToList, summary, i);
+                    }
+                } else {
+                    summary = addToResultVector(matrix, results, numCols, mapConvertedToList, summary, i);
+                }
             }
         }
         return new NormalMatrix<>(1, results);
+    }
+
+    private T addToResultVector(SparseMatrix<T> matrix, List<T> results, int numCols, List<Pair<Pair<Integer, Integer>, T>> mapConvertedToList, T summary, int i) {
+        Integer index = mapConvertedToList.get(i).getKey().getKey();
+        T temp = matrix.getSparseMatrix().getOrDefault(new Pair<>(index, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(index, numCols), matrix.getTypeElement().initializeWithZero()));
+        temp.subtract(summary);
+        temp.divide(matrix.getSparseMatrix().getOrDefault(new Pair<>(index, index), matrix.getTypeElement().initializeWithZero()));
+        if (results.size() > index) {
+            results.set(index, temp);
+        }
+        summary = summary.initializeWithZero();
+        return summary;
     }
 }

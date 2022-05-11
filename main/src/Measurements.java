@@ -10,13 +10,13 @@ import Variables.MyDouble;
 import Variables.MyFloat;
 import Variables.MyFractions;
 import Variables.Operations;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Measurements<T extends Operations<T>> {
@@ -72,12 +72,10 @@ public class Measurements<T extends Operations<T>> {
 
 
             if (this.getMaximumNorm(normsGJ).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0 && !gj) {
-//                this.saveResults("GJ - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix1" + type, "C:/Users/gruby/population_protocols_probability/data/");
                 this.saveResults("GJ - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix1" + type, "data/");
                 gj = true;
             }
             if (this.getMaximumNorm(normsGS).returnValue().compareTo(new BigDecimal(String.valueOf(expectedPrecision))) < 0 && !gs) {
-//                this.saveResults("GS - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix2" + type, "C:/Users/gruby/population_protocols_probability/data/");
                 this.saveResults("GS - precision: " + expectedPrecision + " in iteration: " + iteration, "compareJacobiWithSeidelSparseMatrix2" + type, "data/");
                 gs = true;
             }
@@ -148,7 +146,6 @@ public class Measurements<T extends Operations<T>> {
             results.append("GJ - ").append(i).append(": ").append(this.getMaximumNorm(normsGJ).returnValue()).append(", time: ").append(timeForGJ).append("\n");
 
         }
-//        this.saveResults(results.toString(), "compareJacobiWithSeidelNormalMatrix" + type, "C:/Users/gruby/population_protocols_probability/data/");
         this.saveResults(results.toString(), "compareJacobiWithSeidelNormalMatrix" + type, "data/");
     }
 
@@ -198,7 +195,6 @@ public class Measurements<T extends Operations<T>> {
             results.append("GJ - ").append(i).append(": ").append(this.getMaximumNorm(normsGJ).returnValue()).append(", time: ").append(timeForGJ).append("\n");
 
         }
-//        this.saveResults(results.toString(), "compareJacobiWithSeidelSparseMatrix" + type, "C:/Users/gruby/population_protocols_probability/data/");
         this.saveResults(results.toString(), "compareJacobiWithSeidelSparseMatrix" + type, "data/");
     }
 
@@ -263,8 +259,7 @@ public class Measurements<T extends Operations<T>> {
             results.append("Sparse matrix - ").append(i).append(": ").append(this.getMaximumNorm(normsForSpareMatrix).returnValue()).append(", time: ").append(timeForSparse).append("\n");
 
         }
-//        this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix" + type, "C:/Users/gruby/population_protocols_probability/data/");
-        this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix" + type, "data");
+        this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix" + type, "data/");
     }
 
     public void verifyIterativeMethods(ArrayList<Integer> values, T el, String type, Integer iterationsNumber, Integer symulationsNumber) throws IOException {
@@ -303,8 +298,6 @@ public class Measurements<T extends Operations<T>> {
             results.append("GJ - ").append(i).append(": ").append(this.getMaximumNorm(normsGJ).returnValue()).append("\n");
 
         }
-
-        //       this.saveResults(results.toString(), "verifyIterativeMethod" + type, "C:/Users/gruby/population_protocols_probability/data/");
         this.saveResults(results.toString(), "verifyIterativeMethod" + type + iterationsNumber, "data/");
     }
 
@@ -374,7 +367,8 @@ public class Measurements<T extends Operations<T>> {
 
         // Double
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 100, 200, 300, 400, 500);
+        Collections.addAll(toCalculate, 200, 400, 600, 800, 1000);
+
         measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
         measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
         measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
@@ -386,14 +380,14 @@ public class Measurements<T extends Operations<T>> {
 
 
         toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 10, 20, 30, 40, 50);
+        Collections.addAll(toCalculate, 20, 40, 60, 80, 100);
 
         //Fractions
         measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
         measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
         measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-
         measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
+
         ArrayList<ArrayList<Integer>> listWithIterations = new ArrayList<>();
         ArrayList<Integer> first = new ArrayList<>();
         first.add(50);

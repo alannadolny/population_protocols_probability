@@ -62,18 +62,12 @@ public class SparseMatrix<T extends Operations<T>> {
             for (int j = 0; j < matrix.countColumns(); j++) {
                 if (matrix.getMatrix().get(i).get(j).compare(this.typeElement) != 0) {
                     this.sparseMatrix.put(new Pair<>(i, j), matrix.getMatrix().get(i).get(j));
-//                    System.out.println(i+"; "+j+"; "+matrix.getMatrix().get(j).get(i).returnValue());
                 }
             }
             if (vector.getMatrix().get(i).get(0).compare(this.typeElement) != 0) {
                 this.sparseMatrix.put(new Pair<>(i, matrix.countColumns()), vector.getMatrix().get(i).get(0));
-//                System.out.println(i+"; "+(matrix.countColumns()+1)+"; "+vector.getMatrix().get(i).get(0).returnValue());
             }
         }
-//        for (Map.Entry<Pair<Integer, Integer>, T> entry : this.sparseMatrix.entrySet()) {
-//            System.out.println(entry);
-//        }
-//        System.out.println(this);
     }
 
     public void fillMatrix() {
@@ -138,14 +132,6 @@ public class SparseMatrix<T extends Operations<T>> {
     }
 
     public Integer countRows() {
-//        Integer max=-1;
-//        for (Map.Entry<Pair<Integer, Integer>, T> entry : this.sparseMatrix.entrySet()) {
-//            if (entry.getKey().getValue()>max){
-//                max=entry.getKey().getValue();
-//            }
-//        }
-//        return max+1;
-//        return generateIndexes().size();
         return this.numRows;
     }
 
