@@ -281,7 +281,7 @@ public class TestOptimizedGaussForSparseMatrix {
 
     @Test
     public void testGauss3GJDouble() {
-        NormalMatrix<MyDouble> res = this.gaussD.GJ(this.matrixD3, 2);
+        NormalMatrix<MyDouble> res = this.gaussD.GJ(this.matrixD3, 100);
         assertEquals("Gauss GJ", this.res3, res.toString());
     }
 
@@ -291,23 +291,23 @@ public class TestOptimizedGaussForSparseMatrix {
         assertEquals("Gauss GS", this.res3, res.toString());
     }
 
-//    @Test
-//    public void testGauss3PGFractions() {
-//        NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr3, "PG");
-//        assertEquals("Gauss PG", this.res3, res.toString());
-//    }
+    @Test
+    public void testGauss3PGFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr3, "PG");
+        assertEquals("Gauss PG", this.res3, res.toString());
+    }
 
-//    @Test
-//    public void testGauss3GJFractions() {
-//        NormalMatrix<MyFractions> res = this.gaussFr.GJ(this.matrixFr3, 100);
-//        assertEquals("Gauss GJ", this.res3, res.toString());
-//    }
+    @Test
+    public void testGauss3GJFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.GJ(this.matrixFr3, 100);
+        assertEquals("Gauss GJ", this.res3, res.toString());
+    }
 
-//    @Test
-//    public void testGauss3GSFractions() {
-//        NormalMatrix<MyFractions> res = this.gaussFr.GS(this.matrixFr3, 100);
-//        assertEquals("Gauss GS", this.res3, res.toString());
-//    }
+    @Test
+    public void testGauss3GSFractions() {
+        NormalMatrix<MyFractions> res = this.gaussFr.GS(this.matrixFr3, 100);
+        assertEquals("Gauss GS", this.res3, res.toString());
+    }
 
     @After
     public void tearDown() {
