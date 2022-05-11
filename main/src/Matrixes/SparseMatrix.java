@@ -15,6 +15,7 @@ public class SparseMatrix<T extends Operations<T>> {
     private final GenerateEquation generateEquation;
     private int counter = 0;
     private final T typeElement;
+    private final int numRows;
 
 
     public Map<Pair<Integer, Integer>, T> getSparseMatrix() {
@@ -42,7 +43,6 @@ public class SparseMatrix<T extends Operations<T>> {
             }
             counter++;
         }
-
         return indexes;
     }
 
@@ -50,24 +50,29 @@ public class SparseMatrix<T extends Operations<T>> {
         this.sparseMatrix = new HashMap<>(Map.of());
         this.generateEquation = generateEquation;
         this.typeElement = typeElement;
+        this.numRows = generateIndexes().size();
     }
 
     public SparseMatrix(NormalMatrix<T> matrix, NormalMatrix<T> vector) {
         this.typeElement = matrix.getMatrix().get(0).get(0).initializeWithZero();
         this.generateEquation = new GenerateEquation(0);
         this.sparseMatrix = new HashMap<>(Map.of());
+        this.numRows = matrix.countRows();
         for (int i = 0; i < matrix.countRows(); i++) {
             for (int j = 0; j < matrix.countColumns(); j++) {
                 if (matrix.getMatrix().get(i).get(j).compare(this.typeElement) != 0) {
-                    this.sparseMatrix.put(new Pair<>(j, i), matrix.getMatrix().get(i).get(j));
+                    this.sparseMatrix.put(new Pair<>(i, j), matrix.getMatrix().get(i).get(j));
 //                    System.out.println(i+"; "+j+"; "+matrix.getMatrix().get(j).get(i).returnValue());
                 }
             }
             if (vector.getMatrix().get(i).get(0).compare(this.typeElement) != 0) {
-                this.sparseMatrix.put(new Pair<>(matrix.countColumns() + 1, i), vector.getMatrix().get(i).get(0));
+                this.sparseMatrix.put(new Pair<>(i, matrix.countColumns()), vector.getMatrix().get(i).get(0));
 //                System.out.println(i+"; "+(matrix.countColumns()+1)+"; "+vector.getMatrix().get(i).get(0).returnValue());
             }
         }
+//        for (Map.Entry<Pair<Integer, Integer>, T> entry : this.sparseMatrix.entrySet()) {
+//            System.out.println(entry);
+//        }
 //        System.out.println(this);
     }
 
@@ -140,11 +145,12 @@ public class SparseMatrix<T extends Operations<T>> {
 //            }
 //        }
 //        return max+1;
-        return generateIndexes().size();
+//        return generateIndexes().size();
+        return this.numRows;
     }
 
     public Integer countColumns() {
-        return countRows() + 1;
+        return this.numRows + 1;
     }
 
     @Override

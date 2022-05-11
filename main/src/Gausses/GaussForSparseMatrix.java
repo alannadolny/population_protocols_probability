@@ -126,18 +126,10 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
             List<T> newResult = new ArrayList<>();
             for (int i = 0; i < numRows; i++) {
                 newResult.add(matrix.getTypeElement().initializeWithZero());
-                T summary;
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(numCols - 1, i))) {
-                    summary = matrix.getSparseMatrix().get(new Pair<>(numCols - 1, i));
-                } else {
-                    summary = matrix.getTypeElement().initializeWithZero();
-                }
+                T summary = matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()));
                 for (int j = 0; j < numCols; j++) {
                     if (i != j) {
-                        T temp2 = matrix.getTypeElement().initializeWithZero();
-                        if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                            temp2 = matrix.getSparseMatrix().get(new Pair<>(i, j)).initialize(matrix.getSparseMatrix().get(new Pair<>(i, j)));
-                        }
+                        T temp2 = matrix.getSparseMatrix().getOrDefault(new Pair<>(i, j), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(i, j), matrix.getTypeElement().initializeWithZero()));
                         temp2.multiply(results.get(j));
                         summary.subtract(temp2);
                     }
@@ -164,20 +156,14 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
         for (int h = 0; h < iter; h++) {
             for (int i = 0; i < numRows; i++) {
                 T summary = matrix.getTypeElement().initializeWithZero();
-                for (int j = 0; j < numRows; j++) {
+                for (int j = 0; j < numCols; j++) {
                     if (i != j) {
-                        T temp2 = matrix.getTypeElement().initializeWithZero();
-                        if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                            temp2 = matrix.getSparseMatrix().get(new Pair<>(i, j)).initialize(matrix.getSparseMatrix().get(new Pair<>(i, j)));
-                        }
+                        T temp2 = matrix.getSparseMatrix().getOrDefault(new Pair<>(i, j), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(i, j), matrix.getTypeElement().initializeWithZero()));
                         temp2.multiply(results.get(j));
                         summary.add(temp2);
                     }
                 }
-                T temp = matrix.getTypeElement().initializeWithZero();
-                if (matrix.getSparseMatrix().containsKey(new Pair<>(numCols - 1, i))) {
-                    temp = matrix.getSparseMatrix().get(new Pair<>(numCols - 1, i));
-                }
+                T temp = matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(i, numCols), matrix.getTypeElement().initializeWithZero()));
                 temp.subtract(summary);
                 temp.divide(matrix.getSparseMatrix().get(new Pair<>(i, i)));
                 results.set(i, temp);

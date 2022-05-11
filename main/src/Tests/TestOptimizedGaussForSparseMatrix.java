@@ -11,6 +11,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 
 public class TestOptimizedGaussForSparseMatrix {
@@ -20,6 +24,9 @@ public class TestOptimizedGaussForSparseMatrix {
     private SparseMatrix<MyFloat> matrixF2;
     private SparseMatrix<MyDouble> matrixD2;
     private SparseMatrix<MyFractions> matrixFr2;
+    private SparseMatrix<MyFloat> matrixF3;
+    private SparseMatrix<MyDouble> matrixD3;
+    private SparseMatrix<MyFractions> matrixFr3;
     private OptimizedGaussForSparseMatrix<MyFloat> gaussF;
     private OptimizedGaussForSparseMatrix<MyDouble> gaussD;
     private OptimizedGaussForSparseMatrix<MyFractions> gaussFr;
@@ -79,6 +86,8 @@ public class TestOptimizedGaussForSparseMatrix {
             "+1,0000 \n" +
             "+1,0000 \n" +
             "+1,0000 \n";
+    private String res3 = "+1,0000 \n" + "+2,0000 \n" + "-1,0000 \n" + "+1,0000 \n";
+
 
     @Before
     public void setUp() {
@@ -101,6 +110,34 @@ public class TestOptimizedGaussForSparseMatrix {
         this.gaussF = new OptimizedGaussForSparseMatrix<>();
         this.gaussD = new OptimizedGaussForSparseMatrix<>();
         this.gaussFr = new OptimizedGaussForSparseMatrix<>();
+
+        List<Number> listOfNumbersToMat = new ArrayList<>();
+        Collections.addAll(listOfNumbersToMat, 10, -1, 2, 0, -1, 11, -1, 3, 2, -1, 10, -1, 0, 3, -1, 8);
+        List<Number> listOfNumbersToVec = new ArrayList<>();
+        Collections.addAll(listOfNumbersToVec, 6, 25, -11, 15);
+        List<MyFloat> floatToMat = new ArrayList<>();
+        List<MyDouble> doubleToMat = new ArrayList<>();
+        List<MyFractions> fractionsToMat = new ArrayList<>();
+        List<MyFloat> floatToVec = new ArrayList<>();
+        List<MyDouble> doubleToVec = new ArrayList<>();
+        List<MyFractions> fractionsToVec = new ArrayList<>();
+
+        listOfNumbersToMat.forEach((n) -> floatToMat.add(new MyFloat(n.floatValue())));
+        listOfNumbersToMat.forEach((n) -> doubleToMat.add(new MyDouble(n.doubleValue())));
+        listOfNumbersToMat.forEach((n) -> fractionsToMat.add(new MyFractions((long) n.doubleValue())));
+        listOfNumbersToVec.forEach((n) -> floatToVec.add(new MyFloat(n.floatValue())));
+        listOfNumbersToVec.forEach((n) -> doubleToVec.add(new MyDouble(n.doubleValue())));
+        listOfNumbersToVec.forEach((n) -> fractionsToVec.add(new MyFractions((long) n.doubleValue())));
+
+        NormalMatrix<MyFloat> tempMF = new NormalMatrix<>(4, floatToMat);
+        NormalMatrix<MyFloat> tempVF = new NormalMatrix<>(1, floatToVec);
+        NormalMatrix<MyDouble> tempMD = new NormalMatrix<>(4, doubleToMat);
+        NormalMatrix<MyDouble> tempVD = new NormalMatrix<>(1, doubleToVec);
+        NormalMatrix<MyFractions> tempMFr = new NormalMatrix<>(4, fractionsToMat);
+        NormalMatrix<MyFractions> tempVFr = new NormalMatrix<>(1, fractionsToVec);
+        this.matrixF3 = new SparseMatrix<>(tempMF, tempVF);
+        this.matrixD3 = new SparseMatrix<>(tempMD, tempVD);
+        this.matrixFr3 = new SparseMatrix<>(tempMFr, tempVFr);
     }
 
     @Test
@@ -217,6 +254,60 @@ public class TestOptimizedGaussForSparseMatrix {
         assertEquals("Gauss GS", this.res2, res.toString());
     }
 
+    @Test
+    public void testGauss3PGFloat() {
+        NormalMatrix<MyFloat> res = this.gaussF.G(this.matrixF3, "PG");
+        assertEquals("Gauss PG", this.res3, res.toString());
+    }
+
+
+    @Test
+    public void testGauss3GJFloat() {
+        NormalMatrix<MyFloat> res = this.gaussF.GJ(this.matrixF3, 100);
+        assertEquals("Gauss GJ", this.res3, res.toString());
+    }
+
+    @Test
+    public void testGauss3GSFloat() {
+        NormalMatrix<MyFloat> res = this.gaussF.GS(this.matrixF3, 100);
+        assertEquals("Gauss GS", this.res3, res.toString());
+    }
+
+    @Test
+    public void testGauss3PGDouble() {
+        NormalMatrix<MyDouble> res = this.gaussD.G(this.matrixD3, "PG");
+        assertEquals("Gauss PG", this.res3, res.toString());
+    }
+
+    @Test
+    public void testGauss3GJDouble() {
+        NormalMatrix<MyDouble> res = this.gaussD.GJ(this.matrixD3, 2);
+        assertEquals("Gauss GJ", this.res3, res.toString());
+    }
+
+    @Test
+    public void testGauss3GSDouble() {
+        NormalMatrix<MyDouble> res = this.gaussD.GS(this.matrixD3, 100);
+        assertEquals("Gauss GS", this.res3, res.toString());
+    }
+
+//    @Test
+//    public void testGauss3PGFractions() {
+//        NormalMatrix<MyFractions> res = this.gaussFr.G(this.matrixFr3, "PG");
+//        assertEquals("Gauss PG", this.res3, res.toString());
+//    }
+
+//    @Test
+//    public void testGauss3GJFractions() {
+//        NormalMatrix<MyFractions> res = this.gaussFr.GJ(this.matrixFr3, 100);
+//        assertEquals("Gauss GJ", this.res3, res.toString());
+//    }
+
+//    @Test
+//    public void testGauss3GSFractions() {
+//        NormalMatrix<MyFractions> res = this.gaussFr.GS(this.matrixFr3, 100);
+//        assertEquals("Gauss GS", this.res3, res.toString());
+//    }
 
     @After
     public void tearDown() {
@@ -228,6 +319,9 @@ public class TestOptimizedGaussForSparseMatrix {
         this.matrixD2 = null;
         this.matrixFr2 = null;
         this.res2 = null;
+        this.matrixF3 = null;
+        this.matrixD3 = null;
+        this.matrixFr3 = null;
         this.gaussF = null;
         this.gaussD = null;
         this.gaussFr = null;
