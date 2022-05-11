@@ -151,7 +151,6 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
             }
             results = newResult;
         }
-
         return new NormalMatrix<>(1, results);
     }
 
