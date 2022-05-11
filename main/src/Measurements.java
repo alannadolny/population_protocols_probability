@@ -316,11 +316,41 @@ public class Measurements<T extends Operations<T>> {
 
         // temp
 
-        GenerateEquation eq = new GenerateEquation(3);
+        GenerateEquation eq = new GenerateEquation(50);
+
         SparseMatrix<MyDouble> sparse = new SparseMatrix<>(eq, new MyDouble(0D));
         sparse.fillMatrix();
+
+        SparseMatrix<MyDouble> sparse2 = new SparseMatrix<>(eq, new MyDouble(0D));
+        sparse2.fillMatrix();
+
+        SparseMatrix<MyDouble> sparse3 = new SparseMatrix<>(eq, new MyDouble(0D));
+        sparse3.fillMatrix();
+
+
         OptimizedGaussForSparseMatrix<MyDouble> optimized = new OptimizedGaussForSparseMatrix<>();
+        long start = System.currentTimeMillis();
         optimized.G(sparse, "PG");
+        System.out.println("Optimized sparse gauss: " + (System.currentTimeMillis() - start));
+
+        ArrayList<MyDouble> vector = new ArrayList<>();
+        for (int k = 0; k < sparse2.generateIndexes().size() - 1; k++) {
+            vector.add(sparse.getTypeElement().initializeWithZero());
+        }
+
+        vector.add(sparse2.getTypeElement().initializeWithOne());
+        NormalMatrix<MyDouble> vectorForNormal = new NormalMatrix<>(1, vector);
+
+        NormalMatrix<MyDouble> normal = new NormalMatrix<MyDouble>(sparse2.generateIndexes().size(), sparse2);
+        Gauss<MyDouble> g = new Gauss<>();
+        start = System.currentTimeMillis();
+        g.G(normal, vectorForNormal, "PG");
+        System.out.println("Normal gauss: " + (System.currentTimeMillis() - start));
+
+        GaussForSparseMatrix<MyDouble> g2 = new GaussForSparseMatrix<>();
+        start = System.currentTimeMillis();
+        g2.G(sparse3, "PG");
+        System.out.println("Sparse gauss without optimization: " + (System.currentTimeMillis() - start));
 
         //sizes:
         // 100 -> 5151

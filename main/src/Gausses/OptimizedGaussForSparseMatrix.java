@@ -5,22 +5,59 @@ import Matrixes.SparseMatrix;
 import Variables.Operations;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
 
-        public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
+    public Integer findRowWithMaximumElement(SparseMatrix<T> matrix, Integer fromRow) {
+        Map<Pair<Integer, Integer>, T> toOperate = matrix.getSparseMatrix().entrySet().stream().filter(el -> el.getKey().getKey().equals(fromRow) && el.getKey().getValue() > fromRow).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Integer index = fromRow;
+        T maximumElement = matrix.getSparseMatrix().get(new Pair<>(fromRow, fromRow));
+
+        for (Map.Entry<Pair<Integer, Integer>, T> pair : toOperate.entrySet()) {
+            Integer key = pair.getKey().getKey();
+            if ((maximumElement.absolute()).compare(matrix.getSparseMatrix().get(new Pair<>(key, fromRow)).absolute()) == -1) {
+                maximumElement = maximumElement.initialize(matrix.getSparseMatrix().get(new Pair<>(key, fromRow)));
+                index = key;
+            }
+        }
+
+        return index;
+    }
+
+    public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
             List<T> results = new ArrayList<>();
             int numCols = matrix.countColumns();
             int numRows = matrix.countRows();
             int leadingNumber = 0;
             while (leadingNumber < numRows) {
+
                 int finalLeadingNumber = leadingNumber;
                 List<Integer> toOperate = matrix.getSparseMatrix().keySet().stream().filter(t -> t.getValue().equals(finalLeadingNumber) && t.getKey() > finalLeadingNumber).map(Pair::getKey).collect(Collectors.toList());
+
+                int index = findRowWithMaximumElement(matrix, finalLeadingNumber);
+                if (index != finalLeadingNumber) {
+                    for (int i = 0; i < numCols; i++) {
+                        Pair<Integer, Integer> pair = new Pair<>(index, i);
+                        Pair<Integer, Integer> pairWithLeading = new Pair<>(finalLeadingNumber, i);
+                        boolean firstCondition = matrix.getSparseMatrix().containsKey(pair);
+                        boolean secondCondition = matrix.getSparseMatrix().containsKey(pairWithLeading);
+                        if (firstCondition && secondCondition) {
+                            T firstNumber = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(index, i)));
+                            matrix.getSparseMatrix().put(pair, matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairWithLeading)));
+                            matrix.getSparseMatrix().put(pairWithLeading, firstNumber);
+                        } else {
+                            if (!firstCondition && secondCondition) {
+                                matrix.getSparseMatrix().put(new Pair<>(index, i), matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pairWithLeading)));
+                                matrix.getSparseMatrix().remove(pairWithLeading);
+                            } else if (firstCondition) {
+                                matrix.getSparseMatrix().put(pairWithLeading, matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(pair)));
+                                matrix.getSparseMatrix().remove(new Pair<>(index, i));
+                            }
+                        }
+                    }
+                }
 
                 for (Integer el : toOperate) {
                     T x = matrix.getTypeElement().initialize(matrix.getSparseMatrix().get(new Pair<>(el, finalLeadingNumber)));
@@ -43,8 +80,6 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
 
                 leadingNumber++;
             }
-
-            System.out.println(matrix);
 
             for (int i = numRows - 1; i >= 0; i--) {
                 int resultIndex;
