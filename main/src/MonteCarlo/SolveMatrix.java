@@ -10,11 +10,13 @@ import java.util.Map;
 public class SolveMatrix {
 
     private final Integer amountOfVoters;
-    private ArrayList<Double> result;
+    private final ArrayList<Double> result;
+    private final Integer amountOfSymulations;
 
-    public SolveMatrix(Integer amountOfVoters) {
+    public SolveMatrix(Integer amountOfVoters, Integer amountOfSymulations) {
         this.result = new ArrayList<>();
         this.amountOfVoters = amountOfVoters;
+        this.amountOfSymulations = amountOfSymulations;
     }
 
     public ArrayList<Double> getResult() {
@@ -41,7 +43,7 @@ public class SolveMatrix {
         Map<Integer, Pair<Integer, Integer>> indexes = generateIndexes();
 
         for (int i = 0; i < indexes.size(); i++) {
-            MonteCarlo monteCarlo = new MonteCarlo(indexes.get(i).getKey(), indexes.get(i).getValue(), this.amountOfVoters);
+            MonteCarlo monteCarlo = new MonteCarlo(indexes.get(i).getKey(), indexes.get(i).getValue(), this.amountOfVoters, this.amountOfSymulations);
             result.add(monteCarlo.symulate());
         }
     }

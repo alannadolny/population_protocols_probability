@@ -12,7 +12,7 @@ public class MonteCarlo {
     private final Integer For;
     private final Integer Against;
     private final Integer AllVoters;
-    static final Integer amountOfTests = 100000;
+    private final Integer amountOfTests;
     private final ArrayList<String> arrayOfProbability;
 
     private final Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
@@ -27,11 +27,12 @@ public class MonteCarlo {
             new Pair<>("U", "N"), new Pair<>("N", "N")
     ));
 
-    public MonteCarlo(Integer aFor, Integer against, Integer allVoters) {
+    public MonteCarlo(Integer aFor, Integer against, Integer allVoters, Integer symulations) {
         this.arrayOfProbability = new ArrayList<>();
         this.For = aFor;
         this.Against = against;
         this.AllVoters = allVoters;
+        this.amountOfTests = symulations;
     }
 
     public boolean checkStableState(ArrayList<Voter> voters) {

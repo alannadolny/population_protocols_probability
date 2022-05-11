@@ -170,7 +170,7 @@ public class Measurements<T extends Operations<T>> {
             SparseMatrix<T> sparseMatrixGS = new SparseMatrix<>(generateEquation, el);
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
-            GaussForSparseMatrix<T> gauss = new GaussForSparseMatrix<>();
+            OptimizedGaussForSparseMatrix<T> gauss = new OptimizedGaussForSparseMatrix<>();
 
             long start = System.currentTimeMillis();
             NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 100);
@@ -267,7 +267,7 @@ public class Measurements<T extends Operations<T>> {
         this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix" + type, "data");
     }
 
-    public void verifyIterativeMethods(ArrayList<Integer> values, T el, String type) throws IOException {
+    public void verifyIterativeMethods(ArrayList<Integer> values, T el, String type, Integer iterationsNumber, Integer symulationsNumber) throws IOException {
 
         StringBuilder results = new StringBuilder();
 
@@ -282,9 +282,9 @@ public class Measurements<T extends Operations<T>> {
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
             GaussForSparseMatrix<T> gauss = new GaussForSparseMatrix<>();
-            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 100);
-            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 100);
-            SolveMatrix monteCarlo = new SolveMatrix(i);
+            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, iterationsNumber);
+            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, iterationsNumber);
+            SolveMatrix monteCarlo = new SolveMatrix(i, symulationsNumber);
             monteCarlo.solve();
 
             for (int j = 0; j < resultGJ.getMatrix().size(); j++) {
@@ -305,98 +305,121 @@ public class Measurements<T extends Operations<T>> {
         }
 
         //       this.saveResults(results.toString(), "verifyIterativeMethod" + type, "C:/Users/gruby/population_protocols_probability/data/");
-        this.saveResults(results.toString(), "verifyIterativeMethod" + type, "data/");
+        this.saveResults(results.toString(), "verifyIterativeMethod" + type + iterationsNumber, "data/");
     }
 
+    public void compareSlowerGaussesWithFaster(ArrayList<Integer> values, T el) throws IOException {
+        StringBuilder results = new StringBuilder();
+        for (int i : values) {
+            GenerateEquation generateEquation = new GenerateEquation(i);
+            SparseMatrix<T> sparseMatrixGJSlower = new SparseMatrix<>(generateEquation, el);
+            SparseMatrix<T> sparseMatrixGJFaster = new SparseMatrix<>(generateEquation, el);
+            SparseMatrix<T> sparseMatrixGSSlower = new SparseMatrix<>(generateEquation, el);
+            SparseMatrix<T> sparseMatrixGSFaster = new SparseMatrix<>(generateEquation, el);
+            SparseMatrix<T> sparseMatrixPGSlower = new SparseMatrix<>(generateEquation, el);
+            SparseMatrix<T> sparseMatrixPGFaster = new SparseMatrix<>(generateEquation, el);
+            sparseMatrixGJSlower.fillMatrix();
+            sparseMatrixGJFaster.fillMatrix();
+            sparseMatrixGSSlower.fillMatrix();
+            sparseMatrixGSFaster.fillMatrix();
+            sparseMatrixPGSlower.fillMatrix();
+            sparseMatrixPGFaster.fillMatrix();
+
+            GaussForSparseMatrix<T> gaussForSparse1 = new GaussForSparseMatrix<>();
+            OptimizedGaussForSparseMatrix<T> gaussForSparse2 = new OptimizedGaussForSparseMatrix<>();
+
+            long start = System.currentTimeMillis();
+            gaussForSparse2.G(sparseMatrixPGSlower, "PG");
+            long stop = System.currentTimeMillis();
+
+            results.append("sparse matrix PG - slower: ").append(stop - start).append("\n");
+
+            start = System.currentTimeMillis();
+            gaussForSparse1.G(sparseMatrixPGFaster, "PG");
+            stop = System.currentTimeMillis();
+
+            results.append("sparse matrix PG - faster: ").append(stop - start).append("\n");
+
+            start = System.currentTimeMillis();
+            gaussForSparse1.GJ(sparseMatrixGJSlower, 100);
+            stop = System.currentTimeMillis();
+
+            results.append("sparse matrix GJ - slower: ").append(stop - start).append("\n");
+
+            start = System.currentTimeMillis();
+            gaussForSparse2.GJ(sparseMatrixGJFaster, 100);
+            stop = System.currentTimeMillis();
+
+            results.append("sparse matrix GJ - faster: ").append(stop - start).append("\n");
+
+            start = System.currentTimeMillis();
+            gaussForSparse1.GS(sparseMatrixGSSlower, 100);
+            stop = System.currentTimeMillis();
+
+            results.append("sparse matrix GS - slower: ").append(stop - start).append("\n");
+
+            start = System.currentTimeMillis();
+            gaussForSparse2.GS(sparseMatrixGSFaster, 100);
+            stop = System.currentTimeMillis();
+
+            results.append("sparse matrix GS - faster: ").append(stop - start).append("\n");
+        }
+        this.saveResults(results.toString(), "compareSlowerGaussesWithFaster", "data/");
+    }
 
     public static void main(String[] args) throws IOException {
         Measurements<MyDouble> measurementsDouble = new Measurements<>();
         Measurements<MyFloat> measurementsFloat = new Measurements<>();
         Measurements<MyFractions> measurementsFractions = new Measurements<>();
 
-        // temp
-
-        GenerateEquation eq = new GenerateEquation(50);
-
-        SparseMatrix<MyDouble> sparse = new SparseMatrix<>(eq, new MyDouble(0D));
-        sparse.fillMatrix();
-
-        SparseMatrix<MyDouble> sparse2 = new SparseMatrix<>(eq, new MyDouble(0D));
-        sparse2.fillMatrix();
-
-        SparseMatrix<MyDouble> sparse3 = new SparseMatrix<>(eq, new MyDouble(0D));
-        sparse3.fillMatrix();
-
-
-        OptimizedGaussForSparseMatrix<MyDouble> optimized = new OptimizedGaussForSparseMatrix<>();
-        long start = System.currentTimeMillis();
-        optimized.G(sparse, "PG");
-        System.out.println("Optimized sparse gauss: " + (System.currentTimeMillis() - start));
-
-        ArrayList<MyDouble> vector = new ArrayList<>();
-        for (int k = 0; k < sparse2.generateIndexes().size() - 1; k++) {
-            vector.add(sparse.getTypeElement().initializeWithZero());
-        }
-
-        vector.add(sparse2.getTypeElement().initializeWithOne());
-        NormalMatrix<MyDouble> vectorForNormal = new NormalMatrix<>(1, vector);
-
-        NormalMatrix<MyDouble> normal = new NormalMatrix<MyDouble>(sparse2.generateIndexes().size(), sparse2);
-        Gauss<MyDouble> g = new Gauss<>();
-        start = System.currentTimeMillis();
-        g.G(normal, vectorForNormal, "PG");
-        System.out.println("Normal gauss: " + (System.currentTimeMillis() - start));
-
-        GaussForSparseMatrix<MyDouble> g2 = new GaussForSparseMatrix<>();
-        start = System.currentTimeMillis();
-        g2.G(sparse3, "PG");
-        System.out.println("Sparse gauss without optimization: " + (System.currentTimeMillis() - start));
-
-        //sizes:
-        // 100 -> 5151
-        // 90 -> 4186
-        // 80 -> 3321
-        // 70 -> 2556
-        // 60 -> 1891
-        // 50 -> 1326
-        // 40 -> 861
-        // 30 -> 496
-        // 20 -> 231
-        // 10 -> 66
-
         // Double
-//        ArrayList<Integer> toCalculate = new ArrayList<>();
-//        Collections.addAll(toCalculate, 10, 20, 30, 40, 50);
-//        measurementsDouble.verifyIterativeMethods(toCalculate, new MyDouble(0D), "Double");
-//        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-//        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
-//        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-//        for (int i = 10; i <= 30; i += 10) {
-//            measurementsDouble.getIterationNumber(i, 0.000001, new MyDouble(0D), "Double-6" + i);
-//            measurementsDouble.getIterationNumber(i, 0.00000000001, new MyDouble(0D), "Double-10" + i);
-//            measurementsDouble.getIterationNumber(i, 0.00000000000001, new MyDouble(0D), "Double-16" + i);
-//        }
+        ArrayList<Integer> toCalculate = new ArrayList<>();
+        Collections.addAll(toCalculate, 100, 200, 300, 400, 500);
+        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
 
         // Float
-//        measurementsFloat.verifyIterativeMethods(toCalculate, new MyFloat(0F), "Floats");
-//        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
-//        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
-//        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
-//        for (int i = 10; i <= 50 ; i += 10) {
-//            measurementsFloat.getIterationNumber(i, 0.000001, new MyFloat(0F), "Floats-6" + i);
-////            measurementsFloat.getIterationNumber(i, 0.00000000001, new MyFloat(0F), "Floats-10" + i);
-////            measurementsFloat.getIterationNumber(i, 0.00000000000001, new MyFloat(0F), "Floats-16" + i);
-//        }
+        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
+        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+
+
+        toCalculate = new ArrayList<>();
+        Collections.addAll(toCalculate, 10, 20, 30, 40, 50);
 
         //Fractions
-//        measurementsFractions.verifyIterativeMethods(toCalculate, new MyFractions(0), "Fractions");
-//        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-//        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
-//        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-//        for (int i = 10; i <= 50; i += 10) {
-//            measurementsFractions.getIterationNumber(i, 0.000001, new MyFractions(0), "Fractions-6" + i);
-//            measurementsFractions.getIterationNumber(i, 0.0000000001, new MyFractions(0), "Fractions-10" + i);
-//            measurementsFractions.getIterationNumber(i, 0.00000000000001, new MyFractions(0), "Fractions-16" + i);
-//        }
+        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
+        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+
+        measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
+        ArrayList<ArrayList<Integer>> listWithIterations = new ArrayList<>();
+        ArrayList<Integer> first = new ArrayList<>();
+        first.add(50);
+        ArrayList<Integer> second = new ArrayList<>();
+        second.add(100);
+        ArrayList<Integer> third = new ArrayList<>();
+        third.add(150);
+        ArrayList<Integer> fourth = new ArrayList<>();
+        fourth.add(200);
+        Collections.addAll(listWithIterations, first, second, third, fourth);
+        for (int i = 0; i < listWithIterations.size(); i++) {
+            measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
+            measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
+        }
+
+        listWithIterations = new ArrayList<>();
+        first = new ArrayList<>();
+        first.add(10);
+        second = new ArrayList<>();
+        second.add(20);
+        third = new ArrayList<>();
+        third.add(30);
+        Collections.addAll(listWithIterations, first, second, third);
+        for (int i = 0; i < listWithIterations.size(); i++) {
+            measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
+            measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
+        }
     }
 }

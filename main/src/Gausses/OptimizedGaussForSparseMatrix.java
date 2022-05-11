@@ -34,6 +34,7 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         int numCols = matrix.countColumns();
         int numRows = matrix.countRows();
         int leadingNumber = 0;
+
         while (leadingNumber < numRows) {
 
             int finalLeadingNumber = leadingNumber;
