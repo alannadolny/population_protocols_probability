@@ -412,8 +412,7 @@ public class Measurements<T extends Operations<T>> {
         third.add(30);
         Collections.addAll(listWithIterations, first, second, third);
         for (int i = 0; i < listWithIterations.size(); i++) {
-            measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
-            measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
+            measurementsFractions.verifyIterativeMethods(listWithIterations.get(i), new MyFractions(0), "Fraction", 100 * (10 * i), 100_000 * (10 * i));
         }
     }
 }
