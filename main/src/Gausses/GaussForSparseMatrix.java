@@ -1,7 +1,7 @@
 package Gausses;
 
 import Matrixes.NormalMatrix;
-import Matrixes.SparseMatrix;
+import Matrixes.OldSparseMatrix;
 import Variables.Operations;
 import javafx.util.Pair;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GaussForSparseMatrix<T extends Operations<T>> {
 
-    public Integer findRowWithMaximumElement(SparseMatrix<T> matrix, Integer fromRow) {
+    public Integer findRowWithMaximumElement(OldSparseMatrix<T> matrix, Integer fromRow) {
         Integer index = fromRow;
         T maximumElement = matrix.getSparseMatrix().get(new Pair<>(fromRow, fromRow));
         for (int i = fromRow; i < matrix.countRows(); i++) {
@@ -26,7 +26,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
     }
 
 
-    public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
+    public NormalMatrix<T> G(OldSparseMatrix<T> matrix, String mode) {
         List<T> results = new ArrayList<>();
         int leadingNumberIndex = 0;
         int numCols = matrix.countColumns();
@@ -115,7 +115,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
     }
 
 
-    public NormalMatrix<T> GJ(SparseMatrix<T> matrix, int iter) {
+    public NormalMatrix<T> GJ(OldSparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
         int numCols = matrix.countColumns() - 1;
         int numRows = matrix.countRows();
@@ -146,7 +146,7 @@ public class GaussForSparseMatrix<T extends Operations<T>> {
         return new NormalMatrix<>(1, results);
     }
 
-    public NormalMatrix<T> GS(SparseMatrix<T> matrix, int iter) {
+    public NormalMatrix<T> GS(OldSparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
         int numCols = matrix.countColumns() - 1;
         int numRows = matrix.countRows();

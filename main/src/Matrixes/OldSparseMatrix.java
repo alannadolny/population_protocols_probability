@@ -3,18 +3,17 @@ package Matrixes;
 import Variables.Operations;
 import javafx.util.Pair;
 
-import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SparseMatrix<T extends Operations<T>> {
+public class OldSparseMatrix<T extends Operations<T>> {
 
     private final Map<Pair<Integer, Integer>, T> sparseMatrix;
 
     private final GenerateEquation generateEquation;
+    private int counter = 0;
     private final T typeElement;
     private final int numRows;
 
@@ -47,14 +46,14 @@ public class SparseMatrix<T extends Operations<T>> {
         return indexes;
     }
 
-    public SparseMatrix(GenerateEquation generateEquation, T typeElement) {
+    public OldSparseMatrix(GenerateEquation generateEquation, T typeElement) {
         this.sparseMatrix = new HashMap<>(Map.of());
         this.generateEquation = generateEquation;
         this.typeElement = typeElement;
         this.numRows = generateIndexes().size();
     }
 
-    public SparseMatrix(NormalMatrix<T> matrix, NormalMatrix<T> vector) {
+    public OldSparseMatrix(NormalMatrix<T> matrix, NormalMatrix<T> vector) {
         this.typeElement = matrix.getMatrix().get(0).get(0).initializeWithZero();
         this.generateEquation = new GenerateEquation(0);
         this.sparseMatrix = new HashMap<>(Map.of());
@@ -72,60 +71,66 @@ public class SparseMatrix<T extends Operations<T>> {
     }
 
     public void fillMatrix() {
-        int size = this.generateEquation.getSize();
-        int n = 0, t = 0;
-        int rowIndex = 0;
-
+        int t = 0, n = 0;
         Map<Pair<Integer, Integer>, Integer> indexes = generateIndexes();
+        ArrayList<ArrayList<ArrayList<Integer>>> possibleChanges = new ArrayList<>();
+        ArrayList<Map<ArrayList<Integer>, Long>> groupedVotes = new ArrayList<>();
+        int size = this.generateEquation.getSize();
 
         while (t + n <= size) {
-            ArrayList<String> currentVoters = this.generateEquation.GenerateVoters(t, n);
+            possibleChanges.add(new ArrayList<>());
+            ArrayList<String> possibleVotes = this.generateEquation.GenerateVoters(t, n);
+
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
+                    Pair<String, String> IJIndexes = new Pair<>(possibleVotes.get(i), possibleVotes.get(j));
+                    ArrayList<String> tempElements = new ArrayList<>();
+                    ArrayList<String> copyOfPossibleVotes = new ArrayList<>(possibleVotes);
+                    copyOfPossibleVotes.remove(possibleVotes.get(i));
+                    copyOfPossibleVotes.remove(possibleVotes.get(j));
                     if (i == j) continue;
-                    ArrayList<String> changedVoters = new ArrayList<>(currentVoters);
-                    String first = changedVoters.get(i);
-                    String second = changedVoters.get(j);
-                    Pair<String, String> afterTransition = this.generateEquation.transitionFunction.get(new Pair<>(first, second));
-                    changedVoters.remove(first);
-                    changedVoters.remove(second);
-                    changedVoters.add(afterTransition.getKey());
-                    changedVoters.add(afterTransition.getValue());
-                    ArrayList<Integer> results = this.generateEquation.sumVotes(changedVoters);
-                    Integer columnIndex = indexes.get(new Pair<>(results.get(0), results.get(1)));
-                    T toPut = this.typeElement.initializeToSparseMatrix(1L, size * (size - 1L));
-                    if (this.sparseMatrix.containsKey(new Pair<>(rowIndex, columnIndex))) {
-                        this.sparseMatrix.get(new Pair<>(rowIndex, columnIndex)).subtract(toPut);
-                    } else {
-                        toPut.reverseSign();
-                        this.sparseMatrix.put(new Pair<>(rowIndex, columnIndex), toPut);
-                    }
+                    tempElements.add(generateEquation.transitionFunction.get(IJIndexes).getValue());
+                    tempElements.addAll(copyOfPossibleVotes);
+                    tempElements.add(generateEquation.transitionFunction.get(IJIndexes).getKey());
+
+                    possibleChanges.get(this.counter).add(generateEquation.sumVotes(tempElements));
                 }
             }
+            counter++;
 
-            if (n + t == size) {
+            if (n + t ==size) {
                 n = 0;
                 t++;
             } else {
                 n++;
             }
-            rowIndex++;
         }
 
-        for (int i = 0; i < rowIndex; i++) {
-            Pair<Integer, Integer> leadingPair = new Pair<>(i, i);
-            T temp = this.getTypeElement().initializeWithOne();
-            temp.reverseSign();
-            if (this.sparseMatrix.containsKey(leadingPair)) {
-                T leadingValue = this.sparseMatrix.get(leadingPair);
-                if(leadingValue.returnValue().round(MathContext.DECIMAL32).compareTo(temp.returnValue()) == 0) leadingValue.reverseSign();
-                    else leadingValue.add(this.typeElement.initializeWithOne());
-            } else {
-                this.sparseMatrix.put(leadingPair, this.typeElement.initializeWithOne());
+        for (ArrayList<ArrayList<Integer>> el : possibleChanges) {
+            groupedVotes.add(generateEquation.groupVotes(el));
+        }
+
+        for (int i = 0; i < groupedVotes.size(); i++) {
+            for (Map.Entry<ArrayList<Integer>, Long> entry : groupedVotes.get(i).entrySet()) {
+                T toMatrix = typeElement.initializeToSparseMatrix(entry.getValue(), generateEquation.getVotesQuantity(groupedVotes.get(0)));
+                toMatrix.reverseSign();
+                sparseMatrix.put(new Pair<>(i, indexes.get(new Pair<>(entry.getKey().get(0), entry.getKey().get(1)))), toMatrix);
             }
         }
 
-        this.sparseMatrix.put(new Pair<>(rowIndex - 1, rowIndex), this.typeElement.initializeWithOne());
+        for (int i = 0; i < size * size; i++) {
+            T temp = typeElement.initializeWithOne();
+            temp.reverseSign();
+            Pair<Integer, Integer> IIPair = new Pair<>(i, i);
+            if (this.sparseMatrix.containsKey(IIPair) && !this.sparseMatrix.get(IIPair).returnValue().equals(temp.returnValue())) {
+                T toAdd = typeElement.initializeWithOne();
+                toAdd.add(this.sparseMatrix.get(IIPair));
+                this.sparseMatrix.put(IIPair, toAdd);
+            } else sparseMatrix.put(IIPair, typeElement.initializeWithOne());
+        }
+
+        this.sparseMatrix.put(new Pair<>(counter - 1, counter - 1), typeElement.initializeWithOne());
+        this.sparseMatrix.put(new Pair<>(counter - 1, counter), typeElement.initializeWithOne());
     }
 
     public Integer countRows() {
@@ -140,11 +145,11 @@ public class SparseMatrix<T extends Operations<T>> {
     public String toString() {
         StringBuilder result = new StringBuilder();
         DecimalFormat df = new DecimalFormat("+0.0000;-0.0000");
-        for (int i = 0; i < this.numRows; i++) {
-            for (int j = 0; j < this.numRows + 1; j++) {
+        for (int i = 0; i < counter; i++) {
+            for (int j = 0; j < counter + 1; j++) {
                 if (this.sparseMatrix.containsKey(new Pair<>(i, j)))
                     result.append(df.format(this.sparseMatrix.get(new Pair<>(i, j)).returnValue())).append(" ");
-                else result.append("+X.XXXX ");
+                else result.append("+0.0000 ");
             }
             result.append("\n");
         }

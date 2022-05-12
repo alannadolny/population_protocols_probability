@@ -1,10 +1,7 @@
 import Gausses.Gauss;
 import Gausses.GaussForSparseMatrix;
 import Gausses.OptimizedGaussForSparseMatrix;
-import Matrixes.GenerateEquation;
-import Matrixes.NormalMatrix;
-import Matrixes.SparseLibraryMatrix;
-import Matrixes.SparseMatrix;
+import Matrixes.*;
 import MonteCarlo.SolveMatrix;
 import Variables.MyDouble;
 import Variables.MyFloat;
@@ -16,7 +13,6 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class Measurements<T extends Operations<T>> {
@@ -47,8 +43,8 @@ public class Measurements<T extends Operations<T>> {
             ArrayList<Double> resultFromLibrary = library.solve();
 
             GenerateEquation generateEquation = new GenerateEquation(size);
-            SparseMatrix<T> sparseMatrixGJ = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGS = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGJ = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGS = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
             GaussForSparseMatrix<T> gauss = new GaussForSparseMatrix<>();
@@ -98,8 +94,8 @@ public class Measurements<T extends Operations<T>> {
             ArrayList<Double> resultFromLibrary = library.solve();
 
             GenerateEquation generateEquation = new GenerateEquation(i);
-            SparseMatrix<T> sparseMatrixGJ = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGS = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGJ = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGS = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
             Gauss<T> gauss = new Gauss<>();
@@ -163,19 +159,19 @@ public class Measurements<T extends Operations<T>> {
             ArrayList<T> normsGS = new ArrayList<>();
 
             GenerateEquation generateEquation = new GenerateEquation(i);
-            SparseMatrix<T> sparseMatrixGJ = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGS = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGJ = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGS = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
             OptimizedGaussForSparseMatrix<T> gauss = new OptimizedGaussForSparseMatrix<>();
 
             long start = System.currentTimeMillis();
-            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 500);
+            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 100);
             long stop = System.currentTimeMillis();
             long timeForGJ = stop - start;
 
             start = System.currentTimeMillis();
-            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 500);
+            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 100);
             stop = System.currentTimeMillis();
             long timeForGS = stop - start;
 
@@ -210,10 +206,10 @@ public class Measurements<T extends Operations<T>> {
             ArrayList<Double> resultFromLibrary = library.solve();
 
             GenerateEquation generateEquation = new GenerateEquation(i);
-            SparseMatrix<T> sparseMatrixForNormal = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixForNormal = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixForNormal.fillMatrix();
             NormalMatrix<T> normalMatrixPG = new NormalMatrix<>(sparseMatrixForNormal.generateIndexes().size(), sparseMatrixForNormal);
-            SparseMatrix<T> sparseMatrixPG = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixPG = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixPG.fillMatrix();
 
             ArrayList<T> vector = new ArrayList<>();
@@ -272,8 +268,8 @@ public class Measurements<T extends Operations<T>> {
             ArrayList<T> normsGS = new ArrayList<>();
 
             GenerateEquation generateEquation = new GenerateEquation(i);
-            SparseMatrix<T> sparseMatrixGJ = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGS = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGJ = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGS = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixGJ.fillMatrix();
             sparseMatrixGS.fillMatrix();
             GaussForSparseMatrix<T> gauss = new GaussForSparseMatrix<>();
@@ -305,12 +301,12 @@ public class Measurements<T extends Operations<T>> {
         StringBuilder results = new StringBuilder();
         for (int i : values) {
             GenerateEquation generateEquation = new GenerateEquation(i);
-            SparseMatrix<T> sparseMatrixGJSlower = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGJFaster = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGSSlower = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixGSFaster = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixPGSlower = new SparseMatrix<>(generateEquation, el);
-            SparseMatrix<T> sparseMatrixPGFaster = new SparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGJSlower = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGJFaster = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGSSlower = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixGSFaster = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixPGSlower = new OldSparseMatrix<>(generateEquation, el);
+            OldSparseMatrix<T> sparseMatrixPGFaster = new OldSparseMatrix<>(generateEquation, el);
             sparseMatrixGJSlower.fillMatrix();
             sparseMatrixGJFaster.fillMatrix();
             sparseMatrixGSSlower.fillMatrix();
@@ -366,11 +362,11 @@ public class Measurements<T extends Operations<T>> {
         Measurements<MyFractions> measurementsFractions = new Measurements<>();
 
         // Double
-        ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 100);
+//        ArrayList<Integer> toCalculate = new ArrayList<>();
+//        Collections.addAll(toCalculate, 100);
 //
 //        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
+        //measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
 //        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
 
         // Float

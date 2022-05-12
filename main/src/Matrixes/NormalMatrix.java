@@ -12,7 +12,7 @@ import javafx.util.Pair;
 public class NormalMatrix <T extends Operations<T>> {
     private final List<List<T>> matrix;
 
-    public NormalMatrix(int n, SparseMatrix<T> matrix) {
+    public NormalMatrix(int n, OldSparseMatrix<T> matrix) {
         this.matrix = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             this.matrix.add(new ArrayList<>());

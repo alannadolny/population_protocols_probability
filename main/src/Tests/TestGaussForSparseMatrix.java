@@ -3,7 +3,7 @@ package Tests;
 import Gausses.GaussForSparseMatrix;
 import Matrixes.GenerateEquation;
 import Matrixes.NormalMatrix;
-import Matrixes.SparseMatrix;
+import Matrixes.OldSparseMatrix;
 import Variables.MyDouble;
 import Variables.MyFloat;
 import Variables.MyFractions;
@@ -18,17 +18,17 @@ import java.util.List;
 import static junit.framework.TestCase.assertEquals;
 
 public class TestGaussForSparseMatrix {
-    private SparseMatrix<MyFloat> matrixF;
-    private SparseMatrix<MyDouble> matrixD;
-    private SparseMatrix<MyFractions> matrixFr;
+    private OldSparseMatrix<MyFloat> matrixF;
+    private OldSparseMatrix<MyDouble> matrixD;
+    private OldSparseMatrix<MyFractions> matrixFr;
 
-    private SparseMatrix<MyFloat> matrixF2;
-    private SparseMatrix<MyDouble> matrixD2;
-    private SparseMatrix<MyFractions> matrixFr2;
+    private OldSparseMatrix<MyFloat> matrixF2;
+    private OldSparseMatrix<MyDouble> matrixD2;
+    private OldSparseMatrix<MyFractions> matrixFr2;
 
-    private SparseMatrix<MyFloat> matrixF3;
-    private SparseMatrix<MyDouble> matrixD3;
-    private SparseMatrix<MyFractions> matrixFr3;
+    private OldSparseMatrix<MyFloat> matrixF3;
+    private OldSparseMatrix<MyDouble> matrixD3;
+    private OldSparseMatrix<MyFractions> matrixFr3;
     private GaussForSparseMatrix<MyFloat> gaussF;
     private GaussForSparseMatrix<MyDouble> gaussD;
     private GaussForSparseMatrix<MyFractions> gaussFr;
@@ -93,17 +93,17 @@ public class TestGaussForSparseMatrix {
     @Before
     public void setUp() {
         GenerateEquation test = new GenerateEquation(3);
-        this.matrixF = new SparseMatrix<>(test, new MyFloat(0F));
-        this.matrixD = new SparseMatrix<>(test, new MyDouble(0.0));
-        this.matrixFr = new SparseMatrix<>(test, new MyFractions(0));
+        this.matrixF = new OldSparseMatrix<>(test, new MyFloat(0F));
+        this.matrixD = new OldSparseMatrix<>(test, new MyDouble(0.0));
+        this.matrixFr = new OldSparseMatrix<>(test, new MyFractions(0));
         this.matrixF.fillMatrix();
         this.matrixD.fillMatrix();
         this.matrixFr.fillMatrix();
 
         GenerateEquation test2 = new GenerateEquation(8);
-        this.matrixF2 = new SparseMatrix<>(test2, new MyFloat(0F));
-        this.matrixD2 = new SparseMatrix<>(test2, new MyDouble(0.0));
-        this.matrixFr2 = new SparseMatrix<>(test2, new MyFractions(0));
+        this.matrixF2 = new OldSparseMatrix<>(test2, new MyFloat(0F));
+        this.matrixD2 = new OldSparseMatrix<>(test2, new MyDouble(0.0));
+        this.matrixFr2 = new OldSparseMatrix<>(test2, new MyFractions(0));
         this.matrixF2.fillMatrix();
         this.matrixD2.fillMatrix();
         this.matrixFr2.fillMatrix();
@@ -136,9 +136,9 @@ public class TestGaussForSparseMatrix {
         NormalMatrix<MyDouble> tempVD = new NormalMatrix<>(1, doubleToVec);
         NormalMatrix<MyFractions> tempMFr = new NormalMatrix<>(4, fractionsToMat);
         NormalMatrix<MyFractions> tempVFr = new NormalMatrix<>(1, fractionsToVec);
-        this.matrixF3 = new SparseMatrix<>(tempMF, tempVF);
-        this.matrixD3 = new SparseMatrix<>(tempMD, tempVD);
-        this.matrixFr3 = new SparseMatrix<>(tempMFr, tempVFr);
+        this.matrixF3 = new OldSparseMatrix<>(tempMF, tempVF);
+        this.matrixD3 = new OldSparseMatrix<>(tempMD, tempVD);
+        this.matrixFr3 = new OldSparseMatrix<>(tempMFr, tempVFr);
 
 
     }
