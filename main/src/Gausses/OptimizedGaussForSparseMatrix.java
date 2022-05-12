@@ -1,7 +1,7 @@
 package Gausses;
 
 import Matrixes.NormalMatrix;
-import Matrixes.OldSparseMatrix;
+import Matrixes.SparseMatrix;
 import Variables.Operations;
 import javafx.util.Pair;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
 
-    public Integer findRowWithMaximumElement(OldSparseMatrix<T> matrix, Integer fromRow) {
+    public Integer findRowWithMaximumElement(SparseMatrix<T> matrix, Integer fromRow) {
         Map<Pair<Integer, Integer>, T> toOperate = matrix.getSparseMatrix().entrySet().stream().filter(el -> el.getKey().getKey().equals(fromRow) && el.getKey().getValue() > fromRow).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Integer index = fromRow;
         T maximumElement = matrix.getSparseMatrix().get(new Pair<>(fromRow, fromRow));
@@ -29,7 +29,7 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         return index;
     }
 
-    public NormalMatrix<T> G(OldSparseMatrix<T> matrix, String mode) {
+    public NormalMatrix<T> G(SparseMatrix<T> matrix, String mode) {
         List<T> results = new ArrayList<>();
         int numCols = matrix.countColumns();
         int numRows = matrix.countRows();
@@ -113,7 +113,7 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
     }
 
 
-    public NormalMatrix<T> GJ(OldSparseMatrix<T> matrix, int iter) {
+    public NormalMatrix<T> GJ(SparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
         int numCols = matrix.countColumns() - 1;
         int numRows = matrix.countRows();
@@ -143,7 +143,7 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         return new NormalMatrix<>(1, results);
     }
 
-    public NormalMatrix<T> GS(OldSparseMatrix<T> matrix, int iter) {
+    public NormalMatrix<T> GS(SparseMatrix<T> matrix, int iter) {
         List<T> results = new ArrayList<>();
         int numCols = matrix.countColumns() - 1;
         int numRows = matrix.countRows();
@@ -181,7 +181,7 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         return new NormalMatrix<>(1, results);
     }
 
-    private T addToResultVector(OldSparseMatrix<T> matrix, List<T> results, int numCols, List<Pair<Pair<Integer, Integer>, T>> mapConvertedToList, T summary, int i) {
+    private T addToResultVector(SparseMatrix<T> matrix, List<T> results, int numCols, List<Pair<Pair<Integer, Integer>, T>> mapConvertedToList, T summary, int i) {
         Integer index = mapConvertedToList.get(i).getKey().getKey();
         T temp = matrix.getSparseMatrix().getOrDefault(new Pair<>(index, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(index, numCols), matrix.getTypeElement().initializeWithZero()));
         temp.subtract(summary);

@@ -1,26 +1,27 @@
 package Matrixes;
 
+import Variables.Operations;
+import javafx.util.Pair;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import Variables.*;
-import javafx.util.Pair;
 
 public class NormalMatrix <T extends Operations<T>> {
     private final List<List<T>> matrix;
 
-    public NormalMatrix(int n, OldSparseMatrix<T> matrix) {
+    public NormalMatrix(int n, SparseMatrix<T> matrix) {
         this.matrix = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             this.matrix.add(new ArrayList<>());
             for (int j = 0; j < n; j++) {
-                if(matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
-                    this.matrix.get(i).add(matrix.getSparseMatrix().get(new Pair<>(i ,j)));
+                if (matrix.getSparseMatrix().containsKey(new Pair<>(i, j))) {
+                    this.matrix.get(i).add(matrix.getSparseMatrix().get(new Pair<>(i, j)));
                 } else {
-                    this.matrix.get(i).add(matrix.getSparseMatrix().get(new Pair<>(0 ,0)).initializeWithZero());
+                    this.matrix.get(i).add(matrix.getSparseMatrix().get(new Pair<>(0, 0)).initializeWithZero());
                 }
             }
         }
