@@ -38,7 +38,7 @@ public class SparseLibraryMatrix {
 
     public void fillMatrix() {
         GenerateEquation equation = new GenerateEquation(this.startedSize);
-        OldSparseMatrix<MyDouble> sparse = new OldSparseMatrix<>(equation, new MyDouble(0D));
+        SparseMatrix<MyDouble> sparse = new SparseMatrix<>(equation, new MyDouble(0D));
         sparse.fillMatrix();
             for (Map.Entry<Pair<Integer, Integer>, MyDouble> el : sparse.getSparseMatrix().entrySet()) {
                 if (el.getKey().getValue() < sparse.countRows())

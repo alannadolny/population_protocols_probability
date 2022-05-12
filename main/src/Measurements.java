@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Measurements<T extends Operations<T>> {
@@ -365,11 +366,11 @@ public class Measurements<T extends Operations<T>> {
         Measurements<MyFractions> measurementsFractions = new Measurements<>();
 
         // Double
-//        ArrayList<Integer> toCalculate = new ArrayList<>();
-//        Collections.addAll(toCalculate, 100);
+        ArrayList<Integer> toCalculate = new ArrayList<>();
+        Collections.addAll(toCalculate, 200);
 //
 //        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-        //measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
+        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
 //        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
 
         // Float
