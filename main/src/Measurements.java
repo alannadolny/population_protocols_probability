@@ -121,12 +121,12 @@ public class Measurements<T extends Operations<T>> {
             NormalMatrix<T> vectorGS = new NormalMatrix<>(1, vector2);
 
             long start = System.currentTimeMillis();
-            NormalMatrix<T> resultGJ = gauss.GJ(normalMatrixGJ, vectorGJ, 100);
+            NormalMatrix<T> resultGJ = gauss.GJ(normalMatrixGJ, vectorGJ, 1000);
             long stop = System.currentTimeMillis();
             long timeForGJ = stop - start;
 
             start = System.currentTimeMillis();
-            NormalMatrix<T> resultGS = gauss.GS(normalMatrixGS, vectorGS, 100);
+            NormalMatrix<T> resultGS = gauss.GS(normalMatrixGS, vectorGS, 1000);
             stop = System.currentTimeMillis();
             long timeForGS = stop - start;
 
@@ -170,12 +170,12 @@ public class Measurements<T extends Operations<T>> {
             OptimizedGaussForSparseMatrix<T> gauss = new OptimizedGaussForSparseMatrix<>();
 
             long start = System.currentTimeMillis();
-            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 100);
+            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 1000);
             long stop = System.currentTimeMillis();
             long timeForGJ = stop - start;
 
             start = System.currentTimeMillis();
-            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 100);
+            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 1000);
             stop = System.currentTimeMillis();
             long timeForGS = stop - start;
 
@@ -334,25 +334,25 @@ public class Measurements<T extends Operations<T>> {
             results.append("sparse matrix PG - faster: ").append(stop - start).append("\n");
 
             start = System.currentTimeMillis();
-            gaussForSparse1.GJ(sparseMatrixGJSlower, 100);
+            gaussForSparse1.GJ(sparseMatrixGJSlower, 1000);
             stop = System.currentTimeMillis();
 
             results.append("sparse matrix GJ - slower: ").append(stop - start).append("\n");
 
             start = System.currentTimeMillis();
-            gaussForSparse2.GJ(sparseMatrixGJFaster, 100);
+            gaussForSparse2.GJ(sparseMatrixGJFaster, 1000);
             stop = System.currentTimeMillis();
 
             results.append("sparse matrix GJ - faster: ").append(stop - start).append("\n");
 
             start = System.currentTimeMillis();
-            gaussForSparse1.GS(sparseMatrixGSSlower, 100);
+            gaussForSparse1.GS(sparseMatrixGSSlower, 1000);
             stop = System.currentTimeMillis();
 
             results.append("sparse matrix GS - slower: ").append(stop - start).append("\n");
 
             start = System.currentTimeMillis();
-            gaussForSparse2.GS(sparseMatrixGSFaster, 100);
+            gaussForSparse2.GS(sparseMatrixGSFaster, 1000);
             stop = System.currentTimeMillis();
 
             results.append("sparse matrix GS - faster: ").append(stop - start).append("\n");
