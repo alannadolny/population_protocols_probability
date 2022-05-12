@@ -40,12 +40,10 @@ public class SparseLibraryMatrix {
         GenerateEquation equation = new GenerateEquation(this.startedSize);
         SparseMatrix<MyDouble> sparse = new SparseMatrix<>(equation, new MyDouble(0D));
         sparse.fillMatrix();
-        for (int i = 0; i < this.size; i++) {
-            for (int j = 0; j < this.size; j++) {
-                if (sparse.getSparseMatrix().containsKey(new Pair<>(i, j)))
-                    this.matrix.set(i, j, sparse.getSparseMatrix().get(new Pair<>(i, j)).returnValue().doubleValue());
+            for (Map.Entry<Pair<Integer, Integer>, MyDouble> el : sparse.getSparseMatrix().entrySet()) {
+                if (el.getKey().getValue() < sparse.countRows())
+                this.matrix.set(el.getKey().getKey(), el.getKey().getValue(), el.getValue().returnValue().doubleValue());
             }
-        }
     }
 
     public ArrayList<Double> solve() {

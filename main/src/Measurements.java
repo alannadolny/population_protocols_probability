@@ -170,12 +170,12 @@ public class Measurements<T extends Operations<T>> {
             OptimizedGaussForSparseMatrix<T> gauss = new OptimizedGaussForSparseMatrix<>();
 
             long start = System.currentTimeMillis();
-            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 100);
+            NormalMatrix<T> resultGJ = gauss.GJ(sparseMatrixGJ, 500);
             long stop = System.currentTimeMillis();
             long timeForGJ = stop - start;
 
             start = System.currentTimeMillis();
-            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 100);
+            NormalMatrix<T> resultGS = gauss.GS(sparseMatrixGS, 500);
             stop = System.currentTimeMillis();
             long timeForGS = stop - start;
 
@@ -367,52 +367,52 @@ public class Measurements<T extends Operations<T>> {
 
         // Double
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 200, 400, 600, 800, 1000);
-
-        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+        Collections.addAll(toCalculate, 100);
+//
+//        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
         measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
-        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+//        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
 
         // Float
-        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
-        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
-        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+//        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+//        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
+//        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
 
 
-        toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 20, 40, 60, 80, 100);
+//        toCalculate = new ArrayList<>();
+//        Collections.addAll(toCalculate, 20, 40, 60, 80, 100);
 
         //Fractions
-        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
-        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-        measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
+//        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+//        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
+//        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+//        measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
 
-        ArrayList<ArrayList<Integer>> listWithIterations = new ArrayList<>();
-        ArrayList<Integer> first = new ArrayList<>();
-        first.add(50);
-        ArrayList<Integer> second = new ArrayList<>();
-        second.add(100);
-        ArrayList<Integer> third = new ArrayList<>();
-        third.add(150);
-        ArrayList<Integer> fourth = new ArrayList<>();
-        fourth.add(200);
-        Collections.addAll(listWithIterations, first, second, third, fourth);
-        for (int i = 0; i < listWithIterations.size(); i++) {
-            measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
-            measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
-        }
+//        ArrayList<ArrayList<Integer>> listWithIterations = new ArrayList<>();
+//        ArrayList<Integer> first = new ArrayList<>();
+//        first.add(50);
+//        ArrayList<Integer> second = new ArrayList<>();
+//        second.add(100);
+//        ArrayList<Integer> third = new ArrayList<>();
+//        third.add(150);
+//        ArrayList<Integer> fourth = new ArrayList<>();
+//        fourth.add(200);
+//        Collections.addAll(listWithIterations, first, second, third, fourth);
+//        for (int i = 0; i < listWithIterations.size(); i++) {
+//            measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
+//            measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
+//        }
 
-        listWithIterations = new ArrayList<>();
-        first = new ArrayList<>();
-        first.add(10);
-        second = new ArrayList<>();
-        second.add(20);
-        third = new ArrayList<>();
-        third.add(30);
-        Collections.addAll(listWithIterations, first, second, third);
-        for (int i = 0; i < listWithIterations.size(); i++) {
-            measurementsFractions.verifyIterativeMethods(listWithIterations.get(i), new MyFractions(0), "Fraction", 100 * (10 * i), 100_000 * (10 * i));
-        }
+//        listWithIterations = new ArrayList<>();
+//        first = new ArrayList<>();
+//        first.add(10);
+//        second = new ArrayList<>();
+//        second.add(20);
+//        third = new ArrayList<>();
+//        third.add(30);
+//        Collections.addAll(listWithIterations, first, second, third);
+//        for (int i = 0; i < listWithIterations.size(); i++) {
+//            measurementsFractions.verifyIterativeMethods(listWithIterations.get(i), new MyFractions(0), "Fraction", 100 * (10 * i), 100_000 * (10 * i));
+//        }
     }
 }
