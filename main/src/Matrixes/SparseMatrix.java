@@ -3,10 +3,8 @@ package Matrixes;
 import Variables.Operations;
 import javafx.util.Pair;
 
-import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,14 +110,17 @@ public class SparseMatrix<T extends Operations<T>> {
             rowIndex++;
         }
 
+        DecimalFormat df = new DecimalFormat("0.000000");
+
         for (int i = 0; i < rowIndex; i++) {
             Pair<Integer, Integer> leadingPair = new Pair<>(i, i);
             T temp = this.getTypeElement().initializeWithOne();
             temp.reverseSign();
             if (this.sparseMatrix.containsKey(leadingPair)) {
                 T leadingValue = this.sparseMatrix.get(leadingPair);
-                if(leadingValue.returnValue().round(MathContext.DECIMAL32).compareTo(temp.returnValue()) == 0) leadingValue.reverseSign();
-                    else leadingValue.add(this.typeElement.initializeWithOne());
+                if (df.format(leadingValue.returnValue().doubleValue()).equals(df.format(temp.returnValue().doubleValue())))
+                    leadingValue.reverseSign();
+                else leadingValue.add(this.typeElement.initializeWithOne());
             } else {
                 this.sparseMatrix.put(leadingPair, this.typeElement.initializeWithOne());
             }

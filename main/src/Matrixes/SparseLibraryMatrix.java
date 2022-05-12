@@ -4,6 +4,7 @@ import Variables.MyDouble;
 import javafx.util.Pair;
 import org.ejml.data.DMatrixSparseCSC;
 import org.ejml.sparse.csc.CommonOps_DSCC;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class SparseLibraryMatrix {
         sparse.fillMatrix();
             for (Map.Entry<Pair<Integer, Integer>, MyDouble> el : sparse.getSparseMatrix().entrySet()) {
                 if (el.getKey().getValue() < sparse.countRows())
-                this.matrix.set(el.getKey().getKey(), el.getKey().getValue(), el.getValue().returnValue().doubleValue());
+                    this.matrix.set(el.getKey().getKey(), el.getKey().getValue(), el.getValue().returnValue().doubleValue());
             }
     }
 
