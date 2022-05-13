@@ -110,7 +110,7 @@ public class SparseMatrix<T extends Operations<T>> {
             rowIndex++;
         }
 
-        DecimalFormat df = new DecimalFormat("0.000000");
+        DecimalFormat df = new DecimalFormat("0.0000000");
 
         for (int i = 0; i < rowIndex; i++) {
             Pair<Integer, Integer> leadingPair = new Pair<>(i, i);

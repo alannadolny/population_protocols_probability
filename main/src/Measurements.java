@@ -264,11 +264,11 @@ public class Measurements<T extends Operations<T>> {
         this.saveResults(results.toString(), "compareSparseMatrixWithNormalMatrix" + type, "data/");
     }
 
-    public void verifyIterativeMethods(ArrayList<Integer> values, T el, String type, Integer iterationsNumber, Integer symulationsNumber) throws IOException {
+    public void verifyIterativeMethods(ArrayList<Integer> values, T el, String type, Integer iterationsNumber, Long symulationsNumber) throws IOException {
 
         StringBuilder results = new StringBuilder();
 
-        for (int i : values) {
+        for (Integer i : values) {
 
             ArrayList<T> normsGJ = new ArrayList<>();
             ArrayList<T> normsGS = new ArrayList<>();

@@ -12,7 +12,7 @@ public class MonteCarlo {
     private final Integer For;
     private final Integer Against;
     private final Integer AllVoters;
-    private final Integer amountOfTests;
+    private final Long amountOfTests;
     private final ArrayList<String> arrayOfProbability;
 
     private final Map<Pair<String, String>, Pair<String, String>> transitionFunction = new HashMap<>(Map.of(
@@ -27,7 +27,7 @@ public class MonteCarlo {
             new Pair<>("U", "N"), new Pair<>("N", "N")
     ));
 
-    public MonteCarlo(Integer aFor, Integer against, Integer allVoters, Integer symulations) {
+    public MonteCarlo(Integer aFor, Integer against, Integer allVoters, Long symulations) {
         this.arrayOfProbability = new ArrayList<>();
         this.For = aFor;
         this.Against = against;

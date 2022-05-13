@@ -11,9 +11,9 @@ public class SolveMatrix {
 
     private final Integer amountOfVoters;
     private final ArrayList<Double> result;
-    private final Integer amountOfSymulations;
+    private final Long amountOfSymulations;
 
-    public SolveMatrix(Integer amountOfVoters, Integer amountOfSymulations) {
+    public SolveMatrix(Integer amountOfVoters, Long amountOfSymulations) {
         this.result = new ArrayList<>();
         this.amountOfVoters = amountOfVoters;
         this.amountOfSymulations = amountOfSymulations;
