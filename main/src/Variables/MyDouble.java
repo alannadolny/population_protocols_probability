@@ -69,6 +69,7 @@ public class MyDouble implements Operations<MyDouble> {
 
     @Override
     public BigDecimal returnValue() {
+//        System.out.println(this.num);
         return BigDecimal.valueOf(this.num);
     }
 

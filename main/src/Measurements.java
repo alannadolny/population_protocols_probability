@@ -8,7 +8,6 @@ import Matrixes.SparseMatrix;
 import MonteCarlo.SolveMatrix;
 import Variables.MyDouble;
 import Variables.MyFloat;
-import Variables.MyFractions;
 import Variables.Operations;
 
 import java.io.IOException;
@@ -35,7 +34,10 @@ public class Measurements<T extends Operations<T>> {
                 initialValue = el;
             }
         }
+        System.out.println(initialValue.returnValue());
         return initialValue;
+//        T res= (T) Collections.min(list);
+//        return Collections.min(list);
     }
 
     public void getIterationNumber(int size, double expectedPrecision, T el, String type) throws IOException {
@@ -367,18 +369,18 @@ public class Measurements<T extends Operations<T>> {
 
         // Double
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 25,50,75,100);
+        Collections.addAll(toCalculate, 25, 50, 75, 100);
 
-        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
-        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
-        System.out.println("Policzono Double");
+//        measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+//        measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
+//        measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+//        System.out.println("Policzono Double");
 
         // Float
-        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
-        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
-        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
-        System.out.println("Policzono Float");
+//        measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+//        measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
+//        measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+//        System.out.println("Policzono Float");
 
 
         toCalculate = new ArrayList<>();
@@ -388,8 +390,8 @@ public class Measurements<T extends Operations<T>> {
 //        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
 //        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
 //        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-        measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
-        System.out.println("Policzono Old vs New Gauss");
+//        measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
+//        System.out.println("Policzono Old vs New Gauss");
 
         ArrayList<ArrayList<Integer>> listWithIterations = new ArrayList<>();
         ArrayList<Integer> first = new ArrayList<>();
@@ -401,10 +403,10 @@ public class Measurements<T extends Operations<T>> {
         ArrayList<Integer> fourth = new ArrayList<>();
         fourth.add(200);
         Collections.addAll(listWithIterations, first, second, third, fourth);
-        for (int i = 0; i < listWithIterations.size(); i++) {
-            measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
-            measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
-            System.out.println("Policzono "+listWithIterations.get(i)+" MonteCarlo");
+        for (long i = 0; i < listWithIterations.size(); i++) {
+            measurementsDouble.verifyIterativeMethods(listWithIterations.get((int) i), new MyDouble(0D), "Double", (int) (100 * (10 * i)), 100000L * (10L * i));
+            measurementsFloat.verifyIterativeMethods(listWithIterations.get((int) i), new MyFloat(0F), "Float", (int) (100 * (10 * i)), 100000L * (10L * i));
+            System.out.println("Policzono " + listWithIterations.get((int) i) + " MonteCarlo");
         }
 
 //        listWithIterations = new ArrayList<>();
