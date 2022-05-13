@@ -15,7 +15,7 @@ public class SparseMatrix<T extends Operations<T>> {
     private final GenerateEquation generateEquation;
     private final T typeElement;
     private final int numRows;
-
+    private final int probability;
 
     public Map<Pair<Integer, Integer>, T> getSparseMatrix() {
         return this.sparseMatrix;
@@ -50,6 +50,7 @@ public class SparseMatrix<T extends Operations<T>> {
         this.generateEquation = generateEquation;
         this.typeElement = typeElement;
         this.numRows = generateIndexes().size();
+        this.probability = this.generateEquation.getSize() * (this.generateEquation.getSize() - 1);
     }
 
     public SparseMatrix(NormalMatrix<T> matrix, NormalMatrix<T> vector) {
@@ -57,6 +58,7 @@ public class SparseMatrix<T extends Operations<T>> {
         this.generateEquation = new GenerateEquation(0);
         this.sparseMatrix = new HashMap<>(Map.of());
         this.numRows = matrix.countRows();
+        this.probability = this.generateEquation.getSize() * (this.generateEquation.getSize() - 1);
         for (int i = 0; i < matrix.countRows(); i++) {
             for (int j = 0; j < matrix.countColumns(); j++) {
                 if (matrix.getMatrix().get(i).get(j).compare(this.typeElement) != 0) {
@@ -91,11 +93,10 @@ public class SparseMatrix<T extends Operations<T>> {
                     changedVoters.add(afterTransition.getValue());
                     ArrayList<Integer> results = this.generateEquation.sumVotes(changedVoters);
                     Integer columnIndex = indexes.get(new Pair<>(results.get(0), results.get(1)));
-                    T toPut = this.typeElement.initializeToSparseMatrix(1L, size * (size - 1L));
+                    T toPut = this.typeElement.initializeWithOne();
                     if (this.sparseMatrix.containsKey(new Pair<>(rowIndex, columnIndex))) {
-                        this.sparseMatrix.get(new Pair<>(rowIndex, columnIndex)).subtract(toPut);
+                        this.sparseMatrix.get(new Pair<>(rowIndex, columnIndex)).add(toPut);
                     } else {
-                        toPut.reverseSign();
                         this.sparseMatrix.put(new Pair<>(rowIndex, columnIndex), toPut);
                     }
                 }
@@ -110,19 +111,23 @@ public class SparseMatrix<T extends Operations<T>> {
             rowIndex++;
         }
 
-        DecimalFormat df = new DecimalFormat("0.0000000");
+        for (Map.Entry<Pair<Integer, Integer>, T> entry : this.getSparseMatrix().entrySet()) {
+            entry.getValue().divide(this.typeElement.initizalizeWithInteger(this.probability));
+        }
 
-        for (int i = 0; i < rowIndex; i++) {
+        for (int i = 0; i < rowIndex - 1; i++) {
             Pair<Integer, Integer> leadingPair = new Pair<>(i, i);
-            T temp = this.getTypeElement().initializeWithOne();
-            temp.reverseSign();
-            if (this.sparseMatrix.containsKey(leadingPair)) {
-                T leadingValue = this.sparseMatrix.get(leadingPair);
-                if (df.format(leadingValue.returnValue().doubleValue()).equals(df.format(temp.returnValue().doubleValue())))
-                    leadingValue.reverseSign();
-                else leadingValue.add(this.typeElement.initializeWithOne());
+            if (this.getSparseMatrix().containsKey(leadingPair)) {
+                T currentElement = this.getSparseMatrix().get(leadingPair);
+                if (currentElement.returnValue().equals(this.typeElement.initializeWithOne().returnValue())) {
+                    currentElement.reverseSign();
+                } else {
+                    currentElement.subtract(this.getTypeElement().initializeWithOne());
+                }
             } else {
-                this.sparseMatrix.put(leadingPair, this.typeElement.initializeWithOne());
+                T temp = this.getTypeElement().initializeWithOne();
+                temp.reverseSign();
+                this.getSparseMatrix().put(leadingPair, temp);
             }
         }
 

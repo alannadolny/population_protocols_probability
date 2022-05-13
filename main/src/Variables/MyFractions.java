@@ -123,4 +123,9 @@ public class MyFractions implements Operations<MyFractions> {
         BigInteger denumerator = new BigInteger(String.valueOf((long) Math.pow(10, numbersBehindComma)));
         return new MyFractions(numerator, denumerator);
     }
+
+    @Override
+    public MyFractions initizalizeWithInteger(Integer num) {
+        return new MyFractions(BigInteger.valueOf(num), BigInteger.ONE);
+    }
 }

@@ -25,6 +25,8 @@ public interface Operations<T> {
 
     T initializeWithDouble(Double num);
 
+    T initizalizeWithInteger(Integer num);
+
     Integer compare(T a);
 
     BigDecimal returnValue();

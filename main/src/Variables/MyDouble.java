@@ -78,6 +78,11 @@ public class MyDouble implements Operations<MyDouble> {
         return new MyDouble(num);
     }
 
+    @Override
+    public MyDouble initizalizeWithInteger(Integer num) {
+        return new MyDouble(num.doubleValue());
+    }
+
     public Double getValue() {
         return this.num;
     }

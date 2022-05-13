@@ -72,6 +72,11 @@ public class MyFloat implements Operations<MyFloat> {
     }
 
     @Override
+    public MyFloat initizalizeWithInteger(Integer num) {
+        return new MyFloat(num.floatValue());
+    }
+
+    @Override
     public BigDecimal returnValue() {
         return BigDecimal.valueOf(this.num);
     }
