@@ -1,0 +1,8 @@
+Normal matrix - 25: 3.3306690738754696E-16, time: 768
+Sparse matrix - 25: 3.3306690738754696E-16, time: 99
+Normal matrix - 50: 2.148659972232566E-15, time: 34362
+Sparse matrix - 50: 2.148659972232566E-15, time: 1193
+Normal matrix - 75: 1.1102230246251565E-16, time: 431684
+Sparse matrix - 75: 1.1102230246251565E-16, time: 11805
+Normal matrix - 100: 2.220446049250313E-16, time: 2754958
+Sparse matrix - 100: 2.220446049250313E-16, time: 54256

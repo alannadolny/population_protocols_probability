@@ -363,30 +363,33 @@ public class Measurements<T extends Operations<T>> {
     public static void main(String[] args) throws IOException {
         Measurements<MyDouble> measurementsDouble = new Measurements<>();
         Measurements<MyFloat> measurementsFloat = new Measurements<>();
-        Measurements<MyFractions> measurementsFractions = new Measurements<>();
+//        Measurements<MyFractions> measurementsFractions = new Measurements<>();
 
         // Double
         ArrayList<Integer> toCalculate = new ArrayList<>();
-        Collections.addAll(toCalculate, 50, 100, 150, 200);
-//
+        Collections.addAll(toCalculate, 25,50,75,100);
+
         measurementsDouble.compareSparseMatrixWithNormalMatrix(toCalculate, new MyDouble(0D), "Double");
         measurementsDouble.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyDouble(0D), "Double");
         measurementsDouble.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyDouble(0D), "Double");
+        System.out.println("Policzono Double");
 
         // Float
         measurementsFloat.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
         measurementsFloat.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFloat(0F), "Floats");
         measurementsFloat.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFloat(0F), "Floats");
+        System.out.println("Policzono Float");
 
 
         toCalculate = new ArrayList<>();
         Collections.addAll(toCalculate, 20, 40, 60, 80, 100);
 
         //Fractions
-        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
-        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
-        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+//        measurementsFractions.compareSparseMatrixWithNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
+//        measurementsFractions.compareJacobiWithSeidelSparseMatrix(toCalculate, new MyFractions(0), "Fractions");
+//        measurementsFractions.compareJacobiWithSeidelNormalMatrix(toCalculate, new MyFractions(0), "Fractions");
         measurementsDouble.compareSlowerGaussesWithFaster(toCalculate, new MyDouble(0D));
+        System.out.println("Policzono Old vs New Gauss");
 
         ArrayList<ArrayList<Integer>> listWithIterations = new ArrayList<>();
         ArrayList<Integer> first = new ArrayList<>();
@@ -401,18 +404,19 @@ public class Measurements<T extends Operations<T>> {
         for (int i = 0; i < listWithIterations.size(); i++) {
             measurementsDouble.verifyIterativeMethods(listWithIterations.get(i), new MyDouble(0D), "Double", 100 * (10 * i), 100_000 * (10 * i));
             measurementsFloat.verifyIterativeMethods(listWithIterations.get(i), new MyFloat(0F), "Float", 100 * (10 * i), 100_000 * (10 * i));
+            System.out.println("Policzono "+listWithIterations.get(i)+" MonteCarlo");
         }
 
-        listWithIterations = new ArrayList<>();
-        first = new ArrayList<>();
-        first.add(10);
-        second = new ArrayList<>();
-        second.add(20);
-        third = new ArrayList<>();
-        third.add(30);
-        Collections.addAll(listWithIterations, first, second, third);
-        for (int i = 0; i < listWithIterations.size(); i++) {
-            measurementsFractions.verifyIterativeMethods(listWithIterations.get(i), new MyFractions(0), "Fraction", 100 * (10 * i), 100_000 * (10 * i));
-        }
+//        listWithIterations = new ArrayList<>();
+//        first = new ArrayList<>();
+//        first.add(10);
+//        second = new ArrayList<>();
+//        second.add(20);
+//        third = new ArrayList<>();
+//        third.add(30);
+//        Collections.addAll(listWithIterations, first, second, third);
+//        for (int i = 0; i < listWithIterations.size(); i++) {
+//            measurementsFractions.verifyIterativeMethods(listWithIterations.get(i), new MyFractions(0), "Fraction", 100 * (10 * i), 100_000 * (10 * i));
+//        }
     }
 }
