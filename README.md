@@ -2,13 +2,10 @@
 
 ## SPIS TREŚCI
 
-- [URUCHOMIENIE PROJEKTU](#uruchomienie-projektu)
 - [UŻYTE TECHNOLOGIE / BIBLIOTEKI](#użyte-technologie-/-biblioteki)
 - [KONCEPCJA PROJEKTU](#koncepcja-projektu)
 - [CEL PROJEKTU](#cel-projektu)
 - [STATUS PROJEKTU](#status-projektu)
-
-## URUCHOMIENIE PROJEKTU
 
 ## UŻYTE TECHNOLOGIE / BLIBLOTEKI
 
