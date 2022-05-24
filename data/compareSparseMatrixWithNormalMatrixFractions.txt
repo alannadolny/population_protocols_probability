@@ -1,0 +1,8 @@
+Normal matrix - 10: 0.0025952458198085, time: 226
+Sparse matrix - 10: 0.0025952458198085, time: 58
+Normal matrix - 20: 0.0042827338394134, time: 7760
+Sparse matrix - 20: 0.0042827338394134, time: 2928
+Normal matrix - 30: 0.0060764488397436, time: 172404
+Sparse matrix - 30: 0.0060764488397436, time: 63114
+Normal matrix - 40: 0.0066568545066875, time: 1889247
+Sparse matrix - 40: 0.0066568545066875, time: 657453
