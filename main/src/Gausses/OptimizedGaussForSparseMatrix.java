@@ -163,8 +163,8 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         }
         for (int h = 0; h < iter; h++) {
             T summary = matrix.getTypeElement().initializeWithZero();
-            for (int i = 0; i < mapConvertedToList.size(); i++) {
-                if (!mapConvertedToList.get(i).getKey().getKey().equals(mapConvertedToList.get(i).getKey().getValue()) && mapConvertedToList.get(i).getKey().getValue() < numCols) {
+            for (int i = 0; i < mapConvertedToList.size() - 1; i++) {
+                if (!mapConvertedToList.get(i).getKey().getKey().equals(mapConvertedToList.get(i).getKey().getValue())) {
                     T temp = mapConvertedToList.get(i).getValue().initialize(mapConvertedToList.get(i).getValue());
                     temp.multiply(results.get(mapConvertedToList.get(i).getKey().getValue()));
                     summary.add(temp);
@@ -185,11 +185,10 @@ public class OptimizedGaussForSparseMatrix<T extends Operations<T>> {
         Integer index = mapConvertedToList.get(i).getKey().getKey();
         T temp = matrix.getSparseMatrix().getOrDefault(new Pair<>(index, numCols), matrix.getTypeElement().initializeWithZero()).initialize(matrix.getSparseMatrix().getOrDefault(new Pair<>(index, numCols), matrix.getTypeElement().initializeWithZero()));
         temp.subtract(summary);
-        temp.divide(matrix.getSparseMatrix().getOrDefault(new Pair<>(index, index), matrix.getTypeElement().initializeWithZero()));
+        temp.divide(matrix.getSparseMatrix().get(new Pair<>(index, index)));
         if (results.size() > index) {
             results.set(index, temp);
         }
-        summary = summary.initializeWithZero();
-        return summary;
+        return summary.initializeWithZero();
     }
 }
